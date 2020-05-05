@@ -34,10 +34,25 @@ class SeedScene extends Scene {
         const shortWallGeometry = new PlaneGeometry(100, 5, 1);
         const longWallGeometry = new PlaneGeometry(200, 5, 1);
 
-        const floorMat = new MeshBasicMaterial({color: 0x0D0614, side: DoubleSide});
+        // Materials
+        var cbmaterials = []; 
+
+        cbmaterials.push( new MeshBasicMaterial( { color: 0xffffff, side: DoubleSide }) );
+        cbmaterials.push( new MeshBasicMaterial( { color: 0x0D0614, side: DoubleSide }) );
+        // const floorMat = new MeshBasicMaterial({color: 0x0D0614, side: DoubleSide});
+        var l = floorGeometry.faces.length / 2;
+        for( var i = 0; i < l; i ++ ) {
+            var j = i * 2; 
+            floorGeometry.faces[ j ].materialIndex = ((i + Math.floor(i/8)) % 2); 
+            floorGeometry.faces[ j + 1 ].materialIndex = ((i + Math.floor(i/8)) % 2); 
+        } 
+
+        // Mesh
+        const floorPlane = new Mesh( floorGeometry,  cbmaterials );
+        
         const wallMat = new MeshBasicMaterial({color: 0x5ff5f2, side: DoubleSide});
 
-        const floorPlane = new Mesh(floorGeometry, floorMat);
+        //const floorPlane = new Mesh(floorGeometry, floorMat);
 
         const wallPlaneTop = new Mesh(longWallGeometry, wallMat);
         const wallPlaneBot = new Mesh(longWallGeometry, wallMat);

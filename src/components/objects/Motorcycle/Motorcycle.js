@@ -61,7 +61,6 @@ class Motorcycle extends Group {
 
     updatePosition() {
         const currPosition = this.position;
-        debugger;
         this.position.set(currPosition.x - 1, currPosition.y, currPosition.z);
     }
 
