@@ -70,6 +70,11 @@ class SeedScene extends Scene {
             obj.update(timeStamp);
         }
     }
+
+    updatePosition() {
+        const { rotationSpeed, updateList } = this.state;
+        updateList[1].updatePosition();
+    }
 }
 
 export default SeedScene;
