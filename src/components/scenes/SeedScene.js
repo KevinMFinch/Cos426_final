@@ -16,7 +16,7 @@ class SeedScene extends Scene {
         };
 
         // Set background to a nice color
-        this.background = new Color(0x7ec0ee);
+        this.background = new Color(0x0D0614);
 
         // Add meshes to scene
         const land = new Land();
@@ -24,7 +24,7 @@ class SeedScene extends Scene {
         const lights = new BasicLights();
         const redMotor = new Motorcycle(this);
         redMotor.position.set(2, 1, 5);
-        redMotor.scale.set(.01, .01, .01);
+        redMotor.scale.set(.02, .02, .02);
 
         flower.position.set(2, 0, 2);
 
@@ -34,8 +34,8 @@ class SeedScene extends Scene {
         const shortWallGeometry = new PlaneGeometry(100, 5, 1);
         const longWallGeometry = new PlaneGeometry(200, 5, 1);
 
-        const floorMat = new MeshBasicMaterial({color: 0x33DDFF, side: DoubleSide});
-        const wallMat = new MeshBasicMaterial({color: 0xffddcc, side: DoubleSide});
+        const floorMat = new MeshBasicMaterial({color: 0x0D0614, side: DoubleSide});
+        const wallMat = new MeshBasicMaterial({color: 0x5ff5f2, side: DoubleSide});
 
         const floorPlane = new Mesh(floorGeometry, floorMat);
 
