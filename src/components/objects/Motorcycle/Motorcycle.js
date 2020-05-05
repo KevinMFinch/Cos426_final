@@ -4,6 +4,9 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import MODEL from './1388 Motorcycle.obj';
 import MAT from './1388 Motorcycle.mtl';
+import {
+    Vector3
+  } from "three";
 
 class Motorcycle extends Group {
     constructor(parent) {
@@ -16,6 +19,7 @@ class Motorcycle extends Group {
             bob: true,
             spin: this.spin.bind(this),
             twirl: 0,
+            direction: new Vector3(1,0,0),
         };
 
         // Load object
@@ -59,24 +63,16 @@ class Motorcycle extends Group {
         jumpUp.start();
     }
 
-    updatePosition() {
-        const currPosition = this.position;
-        debugger;
-        this.position.set(currPosition.x - 1, currPosition.y, currPosition.z);
-    }
-
     update(timeStamp) {
-        if (this.state.bob) {
-            // Bob back and forth
-            this.rotation.z = 0.05 * Math.sin(timeStamp / 300);
-        }
-        if (this.state.twirl > 0) {
-            // Lazy implementation of twirl
-            this.state.twirl -= Math.PI / 8;
-            this.rotation.y += Math.PI / 8;
-        }
-        // this.updatePosition();
+        switch (timeStamp.key) {
+            case "ArrowLeft":
+                this.rotateY(Math.PI / 2);
 
+            case "ArrowRight":
+                this.rotateY(- Math.PI / 2);
+                
+        }
+        
         // Advance tween animations, if any exist
         TWEEN.update();
     }

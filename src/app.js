@@ -14,6 +14,9 @@ import { SeedScene } from 'scenes';
 const scene = new SeedScene();
 const camera = new PerspectiveCamera();
 const renderer = new WebGLRenderer({ antialias: true });
+const LEFT = 0;
+const RIGHT = 1;
+const STRAIGHT = 2;
 
 // Set up camera
 camera.position.set(0, 10, 0);
@@ -54,10 +57,9 @@ const windowResizeHandler = () => {
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
 
-// Resize Handler
-const onKeyDown = () => {
-    console.log('key down!');
-    scene.updatePosition && scene.updatePosition();
+const onKeyDown = (timeStamp) => {
+    debugger;
+    scene.update && scene.update(timeStamp);
 };
 
 window.addEventListener( 'keydown', onKeyDown );
