@@ -1,6 +1,6 @@
 import * as Dat from 'dat.gui';
 import { Scene, Color, PlaneGeometry, MeshBasicMaterial, Mesh, DoubleSide, Plane } from 'three';
-import { Flower, Land } from 'objects';
+import { Flower, Land, Motorcycle } from 'objects';
 import { BasicLights } from 'lights';
 
 class SeedScene extends Scene {
@@ -22,6 +22,10 @@ class SeedScene extends Scene {
         const land = new Land();
         const flower = new Flower(this);
         const lights = new BasicLights();
+        const redMotor = new Motorcycle(this);
+        redMotor.position.set(2, 1, 5);
+        redMotor.scale.set(.01, .01, .01);
+
         flower.position.set(2, 0, 2);
 
         const floorGeometry = new PlaneGeometry(200, 100, 1);
@@ -48,7 +52,7 @@ class SeedScene extends Scene {
         wallPlaneLeft.rotateY(Math.PI / 2);
 
         const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
-        this.add(land, flower, floorPlane, ...wallPlanes, lights);
+        this.add(land, flower, floorPlane, redMotor, ...wallPlanes, lights);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
