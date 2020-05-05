@@ -1,7 +1,9 @@
 import { Group } from 'three';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import MODEL from './1388 Motorcycle.obj';
+import MAT from './1388 Motorcycle.mtl';
 
 class Motorcycle extends Group {
     constructor(parent) {
@@ -18,10 +20,14 @@ class Motorcycle extends Group {
 
         // Load object
         const loader = new OBJLoader();
-
+        const mtlLoader = new MTLLoader();
         this.name = 'redCycle';
-        loader.load(MODEL, (object) => {
-            this.add(object);
+        mtlLoader.setResourcePath('src/components/objects/Motorcycle/');
+        mtlLoader.load(MAT, (material) => {
+          material.preload();
+          loader.setMaterials(material).load(MODEL, (obj) => {
+            this.add(obj);
+          });
         });
 
         // Add self to parent's update list
