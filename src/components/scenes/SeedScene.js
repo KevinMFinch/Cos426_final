@@ -24,6 +24,7 @@ class SeedScene extends Scene {
         const lights = new BasicLights();
         const redMotor = new Motorcycle(this);
         redMotor.position.set(2, 1, 5);
+        redMotor.scale.set(.01, .01, .01);
 
         flower.position.set(2, 0, 2);
 
