@@ -6,14 +6,24 @@
  * handles window resizes.
  *
  */
-import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
-import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SeedScene } from 'scenes';
+import {
+  WebGLRenderer,
+  PerspectiveCamera,
+  Vector3
+} from 'three';
+import {
+  OrbitControls
+} from 'three/examples/jsm/controls/OrbitControls.js';
+import {
+  SeedScene
+} from 'scenes';
 
 // Initialize core ThreeJS components
 const scene = new SeedScene();
 const camera = new PerspectiveCamera();
-const renderer = new WebGLRenderer({ antialias: true });
+const renderer = new WebGLRenderer({
+  antialias: true
+});
 
 // Set up camera
 camera.position.set(0, 10, 0);
@@ -37,28 +47,31 @@ controls.update();
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
-    controls.update();
-    renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp);
-    window.requestAnimationFrame(onAnimationFrameHandler);
+  controls.update();
+  renderer.render(scene, camera);
+  scene.update && scene.update(timeStamp);
+  window.requestAnimationFrame(onAnimationFrameHandler);
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
 
 // Resize Handler
 const windowResizeHandler = () => {
-    const { innerHeight, innerWidth } = window;
-    renderer.setSize(innerWidth, innerHeight);
-    camera.aspect = innerWidth / innerHeight;
-    camera.updateProjectionMatrix();
+  const {
+    innerHeight,
+    innerWidth
+  } = window;
+  renderer.setSize(innerWidth, innerHeight);
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
 };
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
 
 // Resize Handler
-const onKeyDown = () => {
-    console.log('key down!');
-    scene.updatePosition && scene.updatePosition();
+const onKeyDown = (key) => {
+  console.log(key);
+  console.log('key down!');
+  scene.updatePosition && scene.updatePosition();
 };
 
-window.addEventListener( 'keydown', onKeyDown );
-
+window.addEventListener('keydown', onKeyDown);

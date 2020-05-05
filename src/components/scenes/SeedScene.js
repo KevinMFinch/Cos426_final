@@ -22,9 +22,15 @@ class SeedScene extends Scene {
         const land = new Land();
         const flower = new Flower(this);
         const lights = new BasicLights();
-        const redMotor = new Motorcycle(this);
+        const redMotor = new Motorcycle(this, 1);
+        const yellowMotor = new Motorcycle(this, 2);
+        
         redMotor.position.set(2, 1, 5);
         redMotor.scale.set(.02, .02, .02);
+
+        yellowMotor.position.set(-5, 1, 5);
+        yellowMotor.scale.set(.07, .07, .07);
+        yellowMotor.rotateY(Math.PI);
 
         flower.position.set(2, 0, 2);
 
@@ -52,7 +58,7 @@ class SeedScene extends Scene {
         wallPlaneLeft.rotateY(Math.PI / 2);
 
         const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
-        this.add(land, flower, floorPlane, redMotor, ...wallPlanes, lights);
+        this.add(land, flower, floorPlane, redMotor, yellowMotor, ...wallPlanes, lights);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
@@ -64,7 +70,6 @@ class SeedScene extends Scene {
 
     update(timeStamp) {
         const { rotationSpeed, updateList } = this.state;
-        this.rotation.y = (rotationSpeed * timeStamp) / 10000;
         // Call update for each object in the updateList
         for (const obj of updateList) {
             obj.update(timeStamp);
@@ -72,7 +77,7 @@ class SeedScene extends Scene {
     }
 
     updatePosition() {
-        const { rotationSpeed, updateList } = this.state;
+        const { updateList } = this.state;
         updateList[1].updatePosition();
     }
 }
