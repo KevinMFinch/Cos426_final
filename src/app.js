@@ -53,3 +53,12 @@ const windowResizeHandler = () => {
 };
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
+
+// Resize Handler
+const onKeyDown = () => {
+    console.log('key down!');
+    scene.updatePosition && scene.updatePosition();
+};
+
+window.addEventListener( 'keydown', onKeyDown );
+

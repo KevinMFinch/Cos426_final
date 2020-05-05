@@ -53,6 +53,12 @@ class Motorcycle extends Group {
         jumpUp.start();
     }
 
+    updatePosition() {
+        const currPosition = this.position;
+        debugger;
+        this.position.set(currPosition.x - 1, currPosition.y, currPosition.z);
+    }
+
     update(timeStamp) {
         if (this.state.bob) {
             // Bob back and forth
@@ -63,6 +69,7 @@ class Motorcycle extends Group {
             this.state.twirl -= Math.PI / 8;
             this.rotation.y += Math.PI / 8;
         }
+        // this.updatePosition();
 
         // Advance tween animations, if any exist
         TWEEN.update();
