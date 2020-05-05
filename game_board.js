@@ -8,8 +8,8 @@ const DOWN = 4;
 
 // Constants for THREE Vectors
 const Z_HEIGHT = 30; // Constant height and should not change because it is a flat plane
-const DELTA_X = new THREE.Vector3(30.0, 0.0, 0.0); // How much moving up or down changes the position of the player 
-const DELTA_Y = new THREE.Vector3(0.0, 30.0, 0.0); // Hw much moving left or right changes the position of the player
+const DELTA_X = new THREE.Vector(30.0, 0.0, 0.0); // How much moving up or down changes the position of the player 
+const DELTA_Y = new THREE.Vector(0.0, 30.0, 0.0); // Hw much moving left or right changes the position of the player
 
 // Creates a game board 
 function gameBoard() {
@@ -24,6 +24,8 @@ function gameBoard() {
 			this.board[i][j] = 0;
 		}
 	}
+
+
 
 	// These constants determine which players are wh
 	this.PLAYER_ONE.id = 1;
@@ -42,11 +44,26 @@ function gameBoard() {
 	this.PLAYER_ONE.position = [Math.round(this.width / 2), Math.round(this.length / 4)]
 	this.PLAYER_TWO.position = [Math.round(this.width / 2), Math.round(3 * this.length / 4)]
 
-	this.PLAYER_ONE.space_position = new THREE Vector3(0.0, 0.0, Z_HEIGHT);
-	this.PLAYER_TWO.space_position = new THREE Vector3(0.0, 0.0, Z_HEIGHT);
+	// Both objects always have the same Z coordinate
+	this.PLAYER_ONE.space_position = new THREE Vector(0.0, 0.0, Z_HEIGHT);
+	this.PLAYER_TWO.space_position = new THREE Vector(0.0, 0.0, Z_HEIGHT);
+
+	this.PLAYER_ONE.space_position = updatedPlayerPosition(this.PLAYER_ONE);
+	this.PLAYER_TWO.space_position = updatedPlayerPosition(this.PLAYER_TWO);
+
+	// True if player has lost and false otherwise
+	this.PLAYER_ONE.lose = false;
+	this.PLAYER_TWO.lose = false;
 };
 
+updatedPlayerPosition = function(player) {
+	let pos = player.space_position.clone().addScaledVector(DELTA_X, player.position[0]);
+	return pos.clone().addScaledVector(DELTA_Y, player.position[1]);
+}
 
+// returns the position to which a player should move in 3d space
+// it automatically changes the position on the board but does not
+// change the position in 3d space
 gameBoard.movePlayer = function(player_id, direction) {
 	// Check if player is valid
 	if (player_id != this.PLAYER_ONE && player_id != this.PLAYER_ONE) {
@@ -116,19 +133,38 @@ gameBoard.movePlayer = function(player_id, direction) {
 
 	}
 
+	
+	this.board[player.position[0]][player.position[1]] = this.player.id;
+	let updated_pos = updatedPlayerPosition(player);
 	// if the current position has been covered by the opponent, trigger the end game
 	if (this.board[player.position[0]][player.position[1]] == opposite_player.id) {
-		this.gameEnd(opposite_player, player);
-	}
-	// update the board to have the correct player id in that location
-	else {
-	this.board[player.position[0]][player.position[1]] = this.player.id;
+		player.lose = true;
 	}
 
-
+	return updated_pos;
 };
 
+// Temporary does nothing other than logs. Other than that
+// If game is over return true. otherwise return false
+gameBoard.checkWinner = function() {
 
-gameBoard.gameEnd = function(winner, loser) {
-	console.log("The winner is", winner,"and the loser is", loser);
+	// This is a tie
+	if (this.PLAYER_ONE.lose && this.PLAYER_TWO.lose) {
+		console.log("It's a tie!");
+		return true;
+	}
+	// player 2 wins
+	else if (this.PLAYER_ONE.lose) {
+		console.log("Player 2 wins!");
+		return true;
+	}
+	// player 1 wins 
+	else if (this.PLAYER_TWO.lose) {
+		console.log("Player 1 wins!");
+		return true;
+	}
+	// No one has won yet
+	else {
+		return false
+	}
 };
