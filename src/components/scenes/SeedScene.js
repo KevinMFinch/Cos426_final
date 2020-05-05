@@ -23,6 +23,7 @@ class SeedScene extends Scene {
         const flower = new Flower(this);
         const lights = new BasicLights();
         const redMotor = new Motorcycle(this);
+        redMotor.position.set(2, 1, 5);
 
         flower.position.set(2, 0, 2);
 

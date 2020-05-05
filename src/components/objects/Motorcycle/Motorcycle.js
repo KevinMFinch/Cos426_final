@@ -1,7 +1,7 @@
 import { Group } from 'three';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
-import MODEL from './redMotor.gltf';
+import MODEL from './1388 Motorcycle.obj';
 
 class Motorcycle extends Group {
     constructor(parent) {
@@ -17,11 +17,11 @@ class Motorcycle extends Group {
         };
 
         // Load object
-        const loader = new GLTFLoader();
+        const loader = new OBJLoader();
 
-        this.name = 'redMotor';
-        loader.load(MODEL, (gltf) => {
-            this.add(gltf.scene);
+        this.name = 'redCycle';
+        loader.load(MODEL, (object) => {
+            this.add(object);
         });
 
         // Add self to parent's update list
