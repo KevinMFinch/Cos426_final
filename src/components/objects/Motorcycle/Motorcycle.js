@@ -79,7 +79,7 @@ class Motorcycle extends Group {
 
     var boxSize = 300 / 120;
     var geometry = new BoxGeometry( boxSize, boxSize, boxSize );
-    var material = new MeshBasicMaterial( {color: 0x00ff00} );
+    var material = new MeshBasicMaterial( {color: 0x30e5fc} );
     var cube = new Mesh( geometry, material );
     
     cube.position.set(old.x, old.y, old.z);
