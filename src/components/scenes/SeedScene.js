@@ -1,7 +1,8 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color, PlaneGeometry, MeshBasicMaterial, GridHelper, Mesh, DoubleSide, Plane } from 'three';
-import { Flower, Land, Motorcycle } from 'objects';
+import { Scene, Color, PlaneGeometry, MeshBasicMaterial, GridHelper, Mesh, DoubleSide } from 'three';
+import { Motorcycle } from 'objects';
 import { BasicLights } from 'lights';
+import { boardSizeWorld }  from '../../constants.js';
 
 class SeedScene extends Scene {
     constructor() {
@@ -30,14 +31,14 @@ class SeedScene extends Scene {
         yellowMotor.scale.set(.07, .07, .07);
         yellowMotor.rotateY(Math.PI);
 
-        const floorGeometry = new PlaneGeometry(200, 100, 1);
+        const floorGeometry = new PlaneGeometry(boardSizeWorld, boardSizeWorld, 1);
         floorGeometry.rotateX(-Math.PI / 2);
 
-        const shortWallGeometry = new PlaneGeometry(100, 5, 1);
-        const longWallGeometry = new PlaneGeometry(200, 5, 1);
+        const shortWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
+        const longWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
 
         // Grid flooring
-        const myGridHelper = new GridHelper(130, 100, 0x0D0614,  0xFF9933);
+        const myGridHelper = new GridHelper(boardSizeWorld, 120, 0x0D0614,  0xFF9933);
 
         const wallMat = new MeshBasicMaterial({color: 0xFF9933, side: DoubleSide});
 
@@ -46,11 +47,11 @@ class SeedScene extends Scene {
         const wallPlaneRight = new Mesh(shortWallGeometry, wallMat);
         const wallPlaneLeft = new Mesh(shortWallGeometry, wallMat);
 
-        wallPlaneTop.position.set(0, 0, 50);
-        wallPlaneBot.position.set(0, 0, -50);
-        wallPlaneRight.position.set(100, 0, 0);
+        wallPlaneTop.position.set(0, 0, boardSizeWorld / 2);
+        wallPlaneBot.position.set(0, 0, -boardSizeWorld / 2);
+        wallPlaneRight.position.set(boardSizeWorld / 2, 0, 0);
         wallPlaneRight.rotateY(Math.PI / 2);
-        wallPlaneLeft.position.set(-100, 0, 0);
+        wallPlaneLeft.position.set(-boardSizeWorld / 2, 0, 0);
         wallPlaneLeft.rotateY(Math.PI / 2);
 
         const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
@@ -61,7 +62,7 @@ class SeedScene extends Scene {
     }
 
     addToUpdateList(object) {
-        this.state.updateList.push(object);
+      this.state.updateList.push(object);
     }
 
     update(timeStamp) {
