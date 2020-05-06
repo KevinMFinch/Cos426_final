@@ -30,6 +30,7 @@ class Motorcycle extends Group {
     this.state = {
       gui: parent.state.gui,
       direction: playerId === 1 ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1),
+      playerId
     };
 
     // Load object
@@ -74,17 +75,22 @@ class Motorcycle extends Group {
   update(timeStamp, scene) {
     const x = this.state.direction.clone();
     const old = this.position.clone();
-    const move = this.position.clone().add(x.multiplyScalar(0.1));
-  
+    const move = this.position.clone().add(x.multiplyScalar(1));
+
     this.position.set(move.x, move.y, move.z);
 
-    var boxSize = boardSizeWorld / 20;
-    var geometry = new BoxGeometry( boxSize, 1, boxSize );
-    var material = new MeshBasicMaterial( {color: 0x30e5fc} );
-    var cube = new Mesh( geometry, material );
-    
+    const boxSize = boardSizeWorld / 20;
+    const geometry = new BoxGeometry( boxSize, 1, boxSize ); 
+    let material = undefined;
+    if (this.state.playerId === 1) {
+      material = new MeshBasicMaterial({color: 0x0BF7FE});
+    } else {
+      material = new MeshBasicMaterial({color: 0xFE0BAF})
+    }
+    const cube = new Mesh(geometry, material);
+
     cube.position.set(old.x, 0, old.z);
-    scene.add( cube );
+    scene.add(cube);
   }
 }
 
