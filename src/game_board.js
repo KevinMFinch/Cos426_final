@@ -56,7 +56,7 @@ updatedPlayerPosition = function(player) {
 // change the position in 3d space
 gameBoard.movePlayer = function(player_id, direction) {
 	// Check if player is valid
-	if (player_id != this.PLAYER_ONE && player_id != this.PLAYER_ONE) {
+	if (player_id != this.PLAYER_ONE.id && player_id != this.PLAYER_TWO.id) {
 		console.log("The player", player_id, "is not a valid player!");
 	}
 	// Check if direction is valid
