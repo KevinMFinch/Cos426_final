@@ -1,22 +1,7 @@
 import { Vector3 } from "three";
 
-// Constants defining the directions
-const WEST = 1;
-const NORTH = 2;
-const EAST = 3;
-const SOUTH = 4;
-
-// directions that be input for players to turn
-const LEFT = 5;
-const RIGHT = 6;
-
-// Constants for THREE Vectors
-const Y_HEIGHT = 0; // Constant height and should not change because it is a flat plane
-const DELTA_X = new THREE.Vector(1.0, 0.0, 0.0); // How much moving up or down changes the position of the player 
-const DELTA_Z = new THREE.Vector(0.0, 0.0, 1.0); // Hw much moving left or right changes the position of the player
-
 // Creates a game board 
-function gameBoard() {
+function gameBoard(playerOne, playerTwo) {
 	this.width = 50;
 	this.length = 50;
 	this.board = new Array(width);
@@ -28,10 +13,13 @@ function gameBoard() {
 			this.board[i][j] = 0;
 		}
 	}
+	// initialize the two players
+	this.PLAYER_ONE = playerOne;
+	this.PLAYER_TWO = playerTwo;
 
 	// These constants determine which players are wh
-	this.PLAYER_ONE.id = 1;
-	this.PLAYER_TWO.id = 2;
+	// this.PLAYER_ONE.id = 1;
+	// this.PLAYER_TWO.id = 2;
 
 	// These numbers indicate the direction a player is facing
 	// 1 should be to the left wall
@@ -166,7 +154,7 @@ gameBoard.movePlayer = function(player_id, direction) {
 	else {
 		this.board[player.position[0]][player.position[1]] = this.player.id;
 	}
-	
+
 	let updated_pos = updatedPlayerPosition(player);
 	return updated_pos;
 };

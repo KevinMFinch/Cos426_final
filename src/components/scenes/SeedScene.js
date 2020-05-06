@@ -26,10 +26,18 @@ class SeedScene extends Scene {
     const playerOne = {
       id: 1,
       bike: undefined,
+      direction: undefined,
+      position: undefined,
+      space_position: undefined,
+      lose: undefined
     };
     const playerTwo = {
       id: 2,
       bike: undefined,
+      direction: undefined,
+      position: undefined,
+      space_position: undefined,
+      lose: undefined
     };
 
     // Init state
