@@ -82,9 +82,9 @@ class Motorcycle extends Group {
     const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
     let material = undefined;
     if (this.state.playerId === 1) {
-      material = new MeshBasicMaterial({color: 0x00ff00});
+      material = new MeshBasicMaterial({color: 0x0BF7FE});
     } else {
-      material = new MeshBasicMaterial({color: 0x0000ff})
+      material = new MeshBasicMaterial({color: 0xFE0BAF})
     }
     const cube = new Mesh(geometry, material);
 
