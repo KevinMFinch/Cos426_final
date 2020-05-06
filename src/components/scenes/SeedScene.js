@@ -1,5 +1,5 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color, PlaneGeometry, MeshBasicMaterial, Mesh, DoubleSide, Plane } from 'three';
+import { Scene, Color, PlaneGeometry, MeshBasicMaterial, GridHelper, Mesh, DoubleSide, Plane } from 'three';
 import { Flower, Land, Motorcycle } from 'objects';
 import { BasicLights } from 'lights';
 
@@ -34,25 +34,16 @@ class SeedScene extends Scene {
         const shortWallGeometry = new PlaneGeometry(100, 5, 1);
         const longWallGeometry = new PlaneGeometry(200, 5, 1);
 
-        // Materials
-        var cbmaterials = []; 
-
-        cbmaterials.push( new MeshBasicMaterial( { color: 0xffffff, side: DoubleSide }) );
-        cbmaterials.push( new MeshBasicMaterial( { color: 0x0D0614, side: DoubleSide }) );
         // const floorMat = new MeshBasicMaterial({color: 0x0D0614, side: DoubleSide});
-        var l = floorGeometry.faces.length / 2;
-        for( var i = 0; i < l; i ++ ) {
-            var j = i * 2; 
-            floorGeometry.faces[ j ].materialIndex = ((i + Math.floor(i/8)) % 2); 
-            floorGeometry.faces[ j + 1 ].materialIndex = ((i + Math.floor(i/8)) % 2); 
-        } 
-
-        // Mesh
-        const floorPlane = new Mesh( floorGeometry,  cbmaterials );
-        
-        const wallMat = new MeshBasicMaterial({color: 0x5ff5f2, side: DoubleSide});
-
+       
+    
+        // grid flooring 
+        var myGridHelper = new GridHelper(130, 100, 0x0D0614,  0xFF9933);
         //const floorPlane = new Mesh(floorGeometry, floorMat);
+        
+        const wallMat = new MeshBasicMaterial({color: 0xFF9933, side: DoubleSide});
+
+        
 
         const wallPlaneTop = new Mesh(longWallGeometry, wallMat);
         const wallPlaneBot = new Mesh(longWallGeometry, wallMat);
@@ -67,7 +58,7 @@ class SeedScene extends Scene {
         wallPlaneLeft.rotateY(Math.PI / 2);
 
         const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
-        this.add(land, flower, floorPlane, redMotor, ...wallPlanes, lights);
+        this.add(land, flower, redMotor, ...wallPlanes, lights, myGridHelper);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
