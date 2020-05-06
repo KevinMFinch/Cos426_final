@@ -67,11 +67,8 @@ const windowResizeHandler = () => {
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
 
-// Resize Handler
-const onKeyDown = (key) => {
-  console.log(key);
-  console.log('key down!');
-  scene.updatePosition && scene.updatePosition();
+const onKeyDown = (timeStamp) => {
+    scene.update && scene.update(timeStamp);
 };
 
 window.addEventListener('keydown', onKeyDown);

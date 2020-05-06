@@ -1,11 +1,13 @@
 import { Group } from 'three';
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-import { TWEEN } from 'three/examples/jsm/libs/tween.module.min.js';
 import MODEL_ONE from './1388 Motorcycle.obj';
 import MAT_ONE from './1388 Motorcycle.mtl';
 import MODEL_TWO from './Motorcycle_1388.obj';
 import MAT_TWO from './Motorcycle_1388.mtl';
+import {
+    Vector3
+  } from 'three';
 
 class Motorcycle extends Group {
     constructor(parent, playerId) {
@@ -36,18 +38,21 @@ class Motorcycle extends Group {
         parent.addToUpdateList(this);
     }
 
-    updatePosition() {
-        const currPosition = this.position;
-        this.position.set(currPosition.x - 1, currPosition.y, currPosition.z);
-    }
-
     update(timeStamp) {
-        
-        // this.updatePosition();
+        switch (timeStamp.key) {
+            case "ArrowLeft":
+                this.rotateY(Math.PI);
 
-        // Advance tween animations, if any exist
-        
+            case "ArrowRight":
+                this.rotateY(-Math.PI / 2);
+        }
+        // var rot = new Vector3();
+        // this.getWorldDirection(rot);
+        // const x = rot.normalize();
+        // this.position.set(this.position.clone().add(x.multiplyScalar(0.1)));
+        // const y = 0;
     }
 }
+
 
 export default Motorcycle;
