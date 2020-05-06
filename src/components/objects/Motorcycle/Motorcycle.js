@@ -73,17 +73,17 @@ class Motorcycle extends Group {
   update(timeStamp, scene) {
     const x = this.state.direction.clone();
     const old = this.position.clone();
-    const move = this.position.clone().add(x.multiplyScalar(0.1));
-  
+    const move = this.position.clone().add(x.multiplyScalar(1));
+
     this.position.set(move.x, move.y, move.z);
 
-    var boxSize = 300 / 120;
-    var geometry = new BoxGeometry( boxSize, boxSize, boxSize );
-    var material = new MeshBasicMaterial( {color: 0x00ff00} );
-    var cube = new Mesh( geometry, material );
-    
+    const boxSize = 300 / 120;
+    const geometry = new BoxGeometry(boxSize, boxSize, boxSize);
+    const material = new MeshBasicMaterial({color: 0x00ff00});
+    const cube = new Mesh(geometry, material);
+
     cube.position.set(old.x, old.y, old.z);
-    scene.add( cube );
+    scene.add(cube);
   }
 }
 
