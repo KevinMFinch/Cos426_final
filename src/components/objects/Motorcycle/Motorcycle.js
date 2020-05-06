@@ -77,12 +77,12 @@ class Motorcycle extends Group {
   
     this.position.set(move.x, move.y, move.z);
 
-    var boxSize = 300 / 20;
-    var geometry = new BoxGeometry( boxSize, 3, boxSize );
+    var boxSize = boardSizeWorld / 20;
+    var geometry = new BoxGeometry( boxSize, 1, boxSize );
     var material = new MeshBasicMaterial( {color: 0x30e5fc} );
     var cube = new Mesh( geometry, material );
     
-    cube.position.set(old.x, old.y - 10, old.z);
+    cube.position.set(old.x, 0, old.z);
     scene.add( cube );
   }
 }
