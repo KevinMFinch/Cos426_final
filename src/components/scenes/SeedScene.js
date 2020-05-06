@@ -61,7 +61,6 @@ class SeedScene extends Scene {
 
     yellowMotor.position.set(-5, 0, 5);
     yellowMotor.scale.set(.07, .07, .07);
-    yellowMotor.rotateY(Math.PI);
 
     this.state.players[0].bike = redMotor;
     this.state.players[1].bike = yellowMotor;
