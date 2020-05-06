@@ -17,6 +17,7 @@ class Motorcycle extends Group {
         // Init state
         this.state = {
             gui: parent.state.gui,
+            direction: new Vector3(0,0,-1),
         };
 
         // Load object
@@ -42,15 +43,22 @@ class Motorcycle extends Group {
         switch (timeStamp.key) {
             case "ArrowLeft":
                 this.rotateY(Math.PI);
+                var axis = new Vector3(0,1,0);
+                var angle = Math.PI / 2;
+                this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
+                debugger;
 
             case "ArrowRight":
                 this.rotateY(-Math.PI / 2);
+                var axis = new Vector3(0,1,0);
+                var angle = Math.PI / 2;
+                this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
         }
-        // var rot = new Vector3();
-        // this.getWorldDirection(rot);
-        // const x = rot.normalize();
-        // this.position.set(this.position.clone().add(x.multiplyScalar(0.1)));
-        // const y = 0;
+
+        const x = this.state.direction.clone();
+        const move = this.position.clone().add(x.multiplyScalar(0.01));
+        this.position.set(move.x, move.y, move.z);
+
     }
 }
 
