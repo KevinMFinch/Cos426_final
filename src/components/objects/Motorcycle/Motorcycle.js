@@ -72,15 +72,18 @@ class Motorcycle extends Group {
 
   update(timeStamp) {
     const x = this.state.direction.clone();
+    const old = this.position.clone();
     const move = this.position.clone().add(x.multiplyScalar(0.01));
+  
     this.position.set(move.x, move.y, move.z);
 
     var boxSize = 300 / 120;
     var geometry = new BoxGeometry( boxSize, boxSize, boxSize );
     var material = new MeshBasicMaterial( {color: 0x00ff00} );
     var cube = new Mesh( geometry, material );
+    
+    cube.position.set(old.x, old.y, old.z);
     this.add( cube );
-   
   }
 }
 
