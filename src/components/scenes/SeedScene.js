@@ -1,6 +1,7 @@
 import * as Dat from 'dat.gui';
 import {
   Scene,
+  BoxGeometry,
   Color,
   PlaneGeometry,
   MeshBasicMaterial,
@@ -72,7 +73,7 @@ class SeedScene extends Scene {
     const longWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
 
     // Grid flooring
-    const myGridHelper = new GridHelper(boardSizeWorld, 120, 0x0D0614, 0xFF9933);
+    const myGridHelper = new GridHelper(boardSizeWorld, 120, 0xFF9933, 0xFF9933);
 
     const wallMat = new MeshBasicMaterial({
       color: 0xFF9933,
@@ -119,6 +120,10 @@ class SeedScene extends Scene {
 
     // Call update for each object in the updateList
     for (const obj of updateList) {
+      var geometry = new BoxGeometry( 1, 1, 1 );
+      var material = new MeshBasicMaterial( {color: 0x00ff00} );
+      var cube = new Mesh( geometry, material );
+      this.add( cube );
       obj.update(timeStamp);
     }
   }
