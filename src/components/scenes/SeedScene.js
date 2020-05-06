@@ -65,7 +65,7 @@ class SeedScene extends Scene {
     const longWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
 
     // Grid flooring
-    const myGridHelper = new GridHelper(boardSizeWorld, 120, 0x0D0614, 0xFF9933);
+    const myGridHelper = new GridHelper(boardSizeWorld, 120, 0xFF9933, 0xFF9933);
 
     const wallMat = new MeshBasicMaterial({
       color: 0xFF9933,
