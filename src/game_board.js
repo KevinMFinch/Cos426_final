@@ -60,7 +60,7 @@ gameBoard.movePlayer = function(player_id, direction) {
 		console.log("The player", player_id, "is not a valid player!");
 	}
 	// Check if direction is valid
-	if (direction != LEFT && direction != RIGHT) {
+	if (direction != NORTH && direction != SOUTH && direction != WEST && direction != EAST) {
 		console.log("The direction", direction, "is not a valid direction!");
 	}
 
@@ -76,76 +76,40 @@ gameBoard.movePlayer = function(player_id, direction) {
 		opposite_player = this.PLAYER_ONE;
 	}
 
-	if (player.direction == NORTH ) {
-		// If facing the top wall and are about to collide, turn right
-		if (player.position[0] == 0) {
-			player.direction = EAST;
-		}
-		// Otherwise move towards the wall
-		else {
-			player.position[0] -= 1;
-			if (direction == LEFT) {
-				player.direction = WEST;
-			}
-			else {
-				player.direction = EAST;
-			}
-		}
+	let updated_pos = undefined;
+	// check if you hit a wall
+	// if he does then he loses
+	if (direction == NORTH && player.position[0] == 0) {
+		player.lose = true;
+		return updated_pos;
+	}
+	else if (direction == SOUTH && player.position[0] == this.width - 1) {
+		player.lose = true;
+		return updated_pos;
+	}
+	else if (direction == EAST && player.position[1] == 0) {
+		player.lose = true;
+		return updated_pos;
+	}
+	else if (direction == WEST && player.position[1] == this.length - 1) {
+		player.lose = true;
+		return updated_pos;
+	}
+
+	player.direction = direction;
+	// otherwise turn the player
+	if (direction == NORTH) {
+		player.position[0] -= 1;
 	}
 	else if (direction == SOUTH) {
-		// If facing the bottom wall and are about to collide, turn left
-		if (player.position[0] == this.width - 1) {
-			player.direction = WEST;
-		}
-		// Otherwise move towards the wall
-		else {
-			player.position[0] += 1;
-			if (direction == LEFT) {
-				player.direction = EAST;
-			}
-			else {
-				player.direction = WEST;
-			}
-		}
+		player.position[0] += 1;
+	} 
+	else if (direction == EAST) {
+		player.position[1] -= 1;
 	}
 	else if (direction == WEST) {
-		// If facing the left wall and are about to collide, turn up
-		if (player.position[1] == 0) {
-			player.direction = NORTH;
-		}
-		// Otherwise move towards the wall
-		else {
-			player.position[1] -= 1;
-
-			if (direction == LEFT) {
-				player.direction = NORTH;
-			}
-			else {
-				player.direction = SOUTH;
-			}
-		}
-		}
-	// else the direction must be EAST
-	else {
-		// If facing the right wall and are about to collide, turn down
-		if (player.position[1] == this.length - 1) {
-			player.direction = SOUTH;
-		}
-		// Otherwise move towards the wall
-		else {
-			player.position[1] += 1;
-
-			if (direction == LEFT) {
-				player.direction = SOUTH;
-			}
-			else {
-				player.direction = NORTH;
-			}
-		}
-
+		player.position[1] += 1;
 	}
-
-	
 	// if the current position has been covered by the opponent, trigger the end game
 	let square_id = this.board[player.position[0]][player.position[1]]
 	if (square_id == opposite_player.id || square_id == player.id) {
