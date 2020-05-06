@@ -18,7 +18,7 @@ import MAT_TWO from './Motorcycle_1388.mtl';
 import {
     LEFT,
     RIGHT,
-} from '../../constants.js';
+} from '../../../constants.js';
 
 class Motorcycle extends Group {
   constructor(parent, playerId) {
