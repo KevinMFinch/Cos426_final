@@ -38,9 +38,15 @@ document.body.style.overflow = 'hidden'; // Fix scrolling
 document.body.appendChild(canvas);
 
 // Set up controls
+const controls = new OrbitControls(camera, canvas);
+controls.enablePan = false;
+controls.enableKeys = false;
+controls.minDistance = 4;
+controls.update();
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
+  controls.update();
   renderer.render(scene, camera);
   scene.update && scene.update(timeStamp);
   window.requestAnimationFrame(onAnimationFrameHandler);
