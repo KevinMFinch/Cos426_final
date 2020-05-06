@@ -1,5 +1,6 @@
 import {
-  Group, 
+  Group,
+  Vector3,
 } from 'three';
 import {
   MTLLoader
@@ -20,7 +21,7 @@ class Motorcycle extends Group {
     // Init state
     this.state = {
       gui: parent.state.gui,
-      direction: new Vector3(0,0,-1),
+      direction: new Vector3(0, 0, -1),
     };
 
     // Load object
@@ -48,19 +49,21 @@ class Motorcycle extends Group {
 
   update(timeStamp) {
     switch (timeStamp.key) {
-        case "ArrowLeft":
-            this.rotateY(Math.PI);
-            var axis = new Vector3(0,1,0);
-            var angle = Math.PI / 2;
-            this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
-            debugger;
+      case "ArrowLeft": {
+        this.rotateY(Math.PI / 2);
+        const axis = new Vector3(0, 1, 0);
+        const angle = Math.PI / 2;
+        this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
+        break;
+      }
+      case "ArrowRight": {
+        this.rotateY(-Math.PI / 2);
+        const axis = new Vector3(0, 1, 0);
+        const angle = Math.PI / 2;
+        this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
+        break;
+      }
 
-        case "ArrowRight":
-            this.rotateY(-Math.PI / 2);
-            var axis = new Vector3(0,1,0);
-            var angle = Math.PI / 2;
-            this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
-    
     }
 
     const x = this.state.direction.clone();
