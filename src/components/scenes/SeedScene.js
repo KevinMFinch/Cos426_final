@@ -27,10 +27,18 @@ class SeedScene extends Scene {
     const playerOne = {
       id: 1,
       bike: undefined,
+      direction: undefined,
+      position: undefined,
+      space_position: undefined,
+      lose: undefined
     };
     const playerTwo = {
       id: 2,
       bike: undefined,
+      direction: undefined,
+      position: undefined,
+      space_position: undefined,
+      lose: undefined
     };
 
     // Init state
@@ -54,7 +62,6 @@ class SeedScene extends Scene {
 
     yellowMotor.position.set(-5, 0, 5);
     yellowMotor.scale.set(.07, .07, .07);
-    yellowMotor.rotateY(Math.PI);
 
     this.state.players[0].bike = redMotor;
     this.state.players[1].bike = yellowMotor;
@@ -66,7 +73,7 @@ class SeedScene extends Scene {
     const longWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
 
     // Grid flooring
-    const myGridHelper = new GridHelper(boardSizeWorld, 120, 0x0D0614, 0xFF9933);
+    const myGridHelper = new GridHelper(boardSizeWorld, 120, 0xFF9933, 0xFF9933);
 
     const wallMat = new MeshBasicMaterial({
       color: 0xFF9933,

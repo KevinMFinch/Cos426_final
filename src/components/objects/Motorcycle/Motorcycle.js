@@ -24,7 +24,7 @@ class Motorcycle extends Group {
     // Init state
     this.state = {
       gui: parent.state.gui,
-      direction: new Vector3(0, 0, -1),
+      direction: playerId === 1 ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1),
     };
 
     // Load object
