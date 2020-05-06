@@ -18,7 +18,7 @@ import MAT_TWO from './Motorcycle_1388.mtl';
 import {
     LEFT,
     RIGHT,
-} from '../../../constants';
+} from '../../../constants.js';
 
 class Motorcycle extends Group {
   constructor(parent, playerId) {
@@ -70,7 +70,7 @@ class Motorcycle extends Group {
     }
   }
 
-  update(timeStamp) {
+  update(timeStamp, scene) {
     const x = this.state.direction.clone();
     const old = this.position.clone();
     const move = this.position.clone().add(x.multiplyScalar(0.1));
@@ -83,7 +83,7 @@ class Motorcycle extends Group {
     var cube = new Mesh( geometry, material );
     
     cube.position.set(old.x, old.y, old.z);
-    this.add( cube );
+    scene.add( cube );
   }
 }
 

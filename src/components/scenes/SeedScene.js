@@ -123,7 +123,7 @@ class SeedScene extends Scene {
     // Call update for each object in the updateList
     for (const obj of updateList) {
     
-      obj.update(timeStamp);
+      obj.update(timeStamp, this);
     }
   }
 }
