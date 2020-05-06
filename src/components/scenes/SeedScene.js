@@ -24,11 +24,11 @@ class SeedScene extends Scene {
         const lights = new BasicLights();
         const redMotor = new Motorcycle(this, 1);
         const yellowMotor = new Motorcycle(this, 2);
-        
-        redMotor.position.set(2, 1, 5);
+
+        redMotor.position.set(2, 0, 5);
         redMotor.scale.set(.02, .02, .02);
 
-        yellowMotor.position.set(-5, 1, 5);
+        yellowMotor.position.set(-5, 0, 5);
         yellowMotor.scale.set(.07, .07, .07);
         yellowMotor.rotateY(Math.PI);
 
@@ -40,16 +40,10 @@ class SeedScene extends Scene {
         const shortWallGeometry = new PlaneGeometry(100, 5, 1);
         const longWallGeometry = new PlaneGeometry(200, 5, 1);
 
-        // const floorMat = new MeshBasicMaterial({color: 0x0D0614, side: DoubleSide});
-       
-    
-        // grid flooring 
+        // Grid flooring
         const myGridHelper = new GridHelper(130, 100, 0x0D0614,  0xFF9933);
-        //const floorPlane = new Mesh(floorGeometry, floorMat);
-        
-        const wallMat = new MeshBasicMaterial({color: 0xFF9933, side: DoubleSide});
 
-        
+        const wallMat = new MeshBasicMaterial({color: 0xFF9933, side: DoubleSide});
 
         const wallPlaneTop = new Mesh(longWallGeometry, wallMat);
         const wallPlaneBot = new Mesh(longWallGeometry, wallMat);
@@ -76,10 +70,7 @@ class SeedScene extends Scene {
     }
 
     update(timeStamp) {
-        const { rotationSpeed, updateList } = this.state;
-
-        // moving screen
-        // this.rotation.y = (rotationSpeed * timeStamp) / 10000; 
+        const { updateList } = this.state;
 
         // Call update for each object in the updateList
         for (const obj of updateList) {

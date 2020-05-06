@@ -1,15 +1,6 @@
-import {
-  Group
-} from 'three';
-import {
-  MTLLoader
-} from 'three/examples/jsm/loaders/MTLLoader';
-import {
-  OBJLoader
-} from 'three/examples/jsm/loaders/OBJLoader.js';
-import {
-  TWEEN
-} from 'three/examples/jsm/libs/tween.module.min.js';
+import { Group } from 'three';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import MODEL_ONE from './1388 Motorcycle.obj';
 import MAT_ONE from './1388 Motorcycle.mtl';
 import MODEL_TWO from './Motorcycle_1388.obj';
