@@ -59,10 +59,10 @@ class SeedScene extends Scene {
     const redMotor = new Motorcycle(this, 1);
     const yellowMotor = new Motorcycle(this, 2);
 
-    redMotor.position.set(10, 0, 5);
+    redMotor.position.set(7.5, 0, 5);
     redMotor.scale.set(.1, .1, .1);
 
-    yellowMotor.position.set(-10, 0, 5);
+    yellowMotor.position.set(-7.5, 0, 5);
     yellowMotor.scale.set(.35, .35, .35);
 
     this.state.players[0].bike = redMotor;
