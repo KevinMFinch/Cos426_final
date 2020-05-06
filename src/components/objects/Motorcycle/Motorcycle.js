@@ -33,8 +33,11 @@ class Motorcycle extends Group {
         });
 
         // Add self to parent's update list
-        parent.addToUpdateList(this);
-    }
+       parent.addToUpdateList(this);
+       updatePosition() {
+        const currPosition = this.position;
+        this.position.set(currPosition.x - 1, currPosition.y, currPosition.z);
+      }
 
     update(timeStamp) {
         switch (timeStamp.key) {
