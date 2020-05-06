@@ -16,6 +16,7 @@ import MAT_ONE from './1388 Motorcycle.mtl';
 import MODEL_TWO from './Motorcycle_1388.obj';
 import MAT_TWO from './Motorcycle_1388.mtl';
 import {
+    boardSizeWorld,
     LEFT,
     RIGHT,
 } from '../../../constants.js';
