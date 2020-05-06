@@ -19,8 +19,6 @@ class SeedScene extends Scene {
         this.background = new Color(0x0D0614);
 
         // Add meshes to scene
-        const land = new Land();
-        const flower = new Flower(this);
         const lights = new BasicLights();
         const redMotor = new Motorcycle(this, 1);
         const yellowMotor = new Motorcycle(this, 2);
@@ -31,8 +29,6 @@ class SeedScene extends Scene {
         yellowMotor.position.set(-5, 0, 5);
         yellowMotor.scale.set(.07, .07, .07);
         yellowMotor.rotateY(Math.PI);
-
-        flower.position.set(2, 0, 2);
 
         const floorGeometry = new PlaneGeometry(200, 100, 1);
         floorGeometry.rotateX(-Math.PI / 2);
@@ -58,7 +54,7 @@ class SeedScene extends Scene {
         wallPlaneLeft.rotateY(Math.PI / 2);
 
         const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
-        this.add(floorPlane, redMotor, yellowMotor, ...wallPlanes, lights);
+        this.add(myGridHelper, redMotor, yellowMotor, ...wallPlanes, lights);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
