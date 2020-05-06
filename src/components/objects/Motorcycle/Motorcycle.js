@@ -18,7 +18,7 @@ import MAT_TWO from './Motorcycle_1388.mtl';
 import {
     LEFT,
     RIGHT,
-} from '../../constants.js';
+} from '../../../constants';
 
 class Motorcycle extends Group {
   constructor(parent, playerId) {
@@ -73,7 +73,7 @@ class Motorcycle extends Group {
   update(timeStamp) {
     const x = this.state.direction.clone();
     const old = this.position.clone();
-    const move = this.position.clone().add(x.multiplyScalar(0.01));
+    const move = this.position.clone().add(x.multiplyScalar(0.1));
   
     this.position.set(move.x, move.y, move.z);
 
