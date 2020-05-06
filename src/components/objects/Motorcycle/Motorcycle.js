@@ -43,29 +43,27 @@ class Motorcycle extends Group {
     parent.addToUpdateList(this);
   }
 
-  updateDir(key) {
-    // 0 is up, 1 is down
-  }
-
-  update(timeStamp) {
-    switch (timeStamp.key) {
-      case "ArrowLeft": {
+  updateDir(dir) {
+    // 0 is left, 1 is right
+    switch (dir) {
+      case 0: {
         this.rotateY(Math.PI / 2);
         const axis = new Vector3(0, 1, 0);
         const angle = Math.PI / 2;
         this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
         break;
       }
-      case "ArrowRight": {
+      case 1: {
         this.rotateY(-Math.PI / 2);
         const axis = new Vector3(0, 1, 0);
-        const angle = Math.PI / 2;
+        const angle = -Math.PI / 2;
         this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
         break;
       }
-
     }
+  }
 
+  update(timeStamp) {
     const x = this.state.direction.clone();
     const move = this.position.clone().add(x.multiplyScalar(0.01));
     this.position.set(move.x, move.y, move.z);

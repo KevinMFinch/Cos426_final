@@ -67,8 +67,11 @@ const windowResizeHandler = () => {
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
 
-const onKeyDown = (timeStamp) => {
-    scene.update && scene.update(timeStamp);
+const onKeyDown = (keyEvent) => {
+  const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
+  if (turningMoves.includes(keyEvent.code)) {
+    scene.turnBike && scene.turnBike(keyEvent.code);
+  }
 };
 
 window.addEventListener('keydown', onKeyDown);
