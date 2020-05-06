@@ -15,6 +15,9 @@ import MODEL_ONE from './1388 Motorcycle.obj';
 import MAT_ONE from './1388 Motorcycle.mtl';
 import MODEL_TWO from './Motorcycle_1388.obj';
 import MAT_TWO from './Motorcycle_1388.mtl';
+// import {
+//     boardSizeWorld
+// } from '../../constants.js';
 
 class Motorcycle extends Group {
   constructor(parent, playerId) {
@@ -70,7 +73,9 @@ class Motorcycle extends Group {
     const x = this.state.direction.clone();
     const move = this.position.clone().add(x.multiplyScalar(0.01));
     this.position.set(move.x, move.y, move.z);
-    var geometry = new BoxGeometry( 1, 1, 1 );
+
+    var boxSize = 300 / 120;
+    var geometry = new BoxGeometry( boxSize, boxSize, boxSize );
     var material = new MeshBasicMaterial( {color: 0x00ff00} );
     var cube = new Mesh( geometry, material );
     this.add( cube );

@@ -57,11 +57,11 @@ class SeedScene extends Scene {
     const redMotor = new Motorcycle(this, 1);
     const yellowMotor = new Motorcycle(this, 2);
 
-    redMotor.position.set(2, 0, 5);
-    redMotor.scale.set(.02, .02, .02);
+    redMotor.position.set(10, 0, 5);
+    redMotor.scale.set(.1, .1, .1);
 
-    yellowMotor.position.set(-5, 0, 5);
-    yellowMotor.scale.set(.07, .07, .07);
+    yellowMotor.position.set(-10, 0, 5);
+    yellowMotor.scale.set(.35, .35, .35);
 
     this.state.players[0].bike = redMotor;
     this.state.players[1].bike = yellowMotor;
@@ -73,7 +73,7 @@ class SeedScene extends Scene {
     const longWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
 
     // Grid flooring
-    const myGridHelper = new GridHelper(boardSizeWorld, 120, 0xFF9933, 0xFF9933);
+    const myGridHelper = new GridHelper(boardSizeWorld, 20, 0xFF9933, 0xFF9933);
 
     const wallMat = new MeshBasicMaterial({
       color: 0xFF9933,

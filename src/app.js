@@ -26,7 +26,7 @@ const renderer = new WebGLRenderer({
 });
 
 // Set up camera
-camera.position.set(0, 400, -300);
+camera.position.set(0, 300, -300);
 camera.lookAt(new Vector3(0, 0, 0));
 
 // Set up renderer, canvas, and minor CSS adjustments
