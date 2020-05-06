@@ -69,10 +69,10 @@ class Motorcycle extends Group {
     }
   }
 
-  update(timeStamp) {
+  update(timeStamp, scene) {
     const x = this.state.direction.clone();
     const old = this.position.clone();
-    const move = this.position.clone().add(x.multiplyScalar(0.01));
+    const move = this.position.clone().add(x.multiplyScalar(0.1));
   
     this.position.set(move.x, move.y, move.z);
 
@@ -82,7 +82,7 @@ class Motorcycle extends Group {
     var cube = new Mesh( geometry, material );
     
     cube.position.set(old.x, old.y, old.z);
-    this.add( cube );
+    scene.add( cube );
   }
 }
 
