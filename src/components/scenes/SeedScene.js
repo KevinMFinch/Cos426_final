@@ -16,7 +16,9 @@ import {
   BasicLights
 } from 'lights';
 import {
-  boardSizeWorld
+  boardSizeWorld,
+  LEFT,
+  RIGHT,
 } from '../../constants.js';
 
 class SeedScene extends Scene {
@@ -103,13 +105,13 @@ class SeedScene extends Scene {
   turnBike(keyCode) {
     // Player 1 bike
     if (keyCode === 'ArrowLeft') {
-      this.state.players[0].bike.updateDir(0);
+      this.state.players[0].bike.updateDir(LEFT);
     } else if (keyCode === 'ArrowRight') {
-      this.state.players[0].bike.updateDir(1);
+      this.state.players[0].bike.updateDir(RIGHT);
     } else if (keyCode === 'KeyA') { // Player 2 bike
-      this.state.players[1].bike.updateDir(0);
+      this.state.players[1].bike.updateDir(LEFT);
     } else {
-      this.state.players[1].bike.updateDir(1);
+      this.state.players[1].bike.updateDir(RIGHT);
     }
   }
 

@@ -15,9 +15,10 @@ import MODEL_ONE from './1388 Motorcycle.obj';
 import MAT_ONE from './1388 Motorcycle.mtl';
 import MODEL_TWO from './Motorcycle_1388.obj';
 import MAT_TWO from './Motorcycle_1388.mtl';
-// import {
-//     boardSizeWorld
-// } from '../../constants.js';
+import {
+    LEFT,
+    RIGHT,
+} from '../../constants.js';
 
 class Motorcycle extends Group {
   constructor(parent, playerId) {
@@ -52,14 +53,14 @@ class Motorcycle extends Group {
   updateDir(dir) {
     // 0 is left, 1 is right
     switch (dir) {
-      case 0: {
+      case LEFT: {
         this.rotateY(Math.PI / 2);
         const axis = new Vector3(0, 1, 0);
         const angle = Math.PI / 2;
         this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
         break;
       }
-      case 1: {
+      case RIGHT: {
         this.rotateY(-Math.PI / 2);
         const axis = new Vector3(0, 1, 0);
         const angle = -Math.PI / 2;
