@@ -1,4 +1,7 @@
 import {
+  BoxGeometry,
+  Mesh,
+  MeshBasicMaterial,
   Group,
   Vector3,
 } from 'three';
@@ -67,6 +70,11 @@ class Motorcycle extends Group {
     const x = this.state.direction.clone();
     const move = this.position.clone().add(x.multiplyScalar(0.01));
     this.position.set(move.x, move.y, move.z);
+    var geometry = new BoxGeometry( 1, 1, 1 );
+    var material = new MeshBasicMaterial( {color: 0x00ff00} );
+    var cube = new Mesh( geometry, material );
+    this.add( cube );
+   
   }
 }
 
