@@ -44,7 +44,7 @@ class SeedScene extends Scene {
        
     
         // grid flooring 
-        var myGridHelper = new GridHelper(130, 100, 0x0D0614,  0xFF9933);
+        const myGridHelper = new GridHelper(130, 100, 0x0D0614,  0xFF9933);
         //const floorPlane = new Mesh(floorGeometry, floorMat);
         
         const wallMat = new MeshBasicMaterial({color: 0xFF9933, side: DoubleSide});
@@ -64,7 +64,7 @@ class SeedScene extends Scene {
         wallPlaneLeft.rotateY(Math.PI / 2);
 
         const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
-        this.add(land, flower, redMotor, ...wallPlanes, lights, myGridHelper, floorPlane, yellowMotor);
+        this.add(land, flower, redMotor, ...wallPlanes, lights, myGridHelper, myGridHelper, yellowMotor);
 
 
         // Populate GUI

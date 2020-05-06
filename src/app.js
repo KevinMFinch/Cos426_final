@@ -68,7 +68,6 @@ windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
 
 const onKeyDown = (timeStamp) => {
-    debugger;
     scene.update && scene.update(timeStamp);
 };
 
