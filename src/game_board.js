@@ -7,9 +7,9 @@ const RIGHT = 3;
 const DOWN = 4;
 
 // Constants for THREE Vectors
-const Z_HEIGHT = 0; // Constant height and should not change because it is a flat plane
-const DELTA_X = new THREE.Vector(30.0, 0.0, 0.0); // How much moving up or down changes the position of the player 
-const DELTA_Y = new THREE.Vector(0.0, 30.0, 0.0); // Hw much moving left or right changes the position of the player
+const Y_HEIGHT = 0; // Constant height and should not change because it is a flat plane
+const DELTA_X = new THREE.Vector(1.0, 0.0, 0.0); // How much moving up or down changes the position of the player 
+const DELTA_Z = new THREE.Vector(0.0, 0.0, 1.0); // Hw much moving left or right changes the position of the player
 
 // Creates a game board 
 function gameBoard() {
@@ -43,8 +43,8 @@ function gameBoard() {
 	this.PLAYER_TWO.position = [Math.round(this.width / 2), Math.round(3 * this.length / 4)]
 
 	// Both objects always have the same Z coordinate
-	this.PLAYER_ONE.space_position = new THREE Vector(0.0, 0.0, Z_HEIGHT);
-	this.PLAYER_TWO.space_position = new THREE Vector(0.0, 0.0, Z_HEIGHT);
+	this.PLAYER_ONE.space_position = new THREE Vector(0.0, Y_HEIGHT, 0.0);
+	this.PLAYER_TWO.space_position = new THREE Vector(0.0, Y_HEIGHT, 0.0);
 
 	this.PLAYER_ONE.space_position = updatedPlayerPosition(this.PLAYER_ONE);
 	this.PLAYER_TWO.space_position = updatedPlayerPosition(this.PLAYER_TWO);
@@ -56,7 +56,7 @@ function gameBoard() {
 
 updatedPlayerPosition = function(player) {
 	let pos = player.space_position.clone().addScaledVector(DELTA_X, player.position[0]);
-	return pos.clone().addScaledVector(DELTA_Y, player.position[1]);
+	return pos.clone().addScaledVector(DELTA_Z, player.position[1]);
 }
 
 // returns the position to which a player should move in 3d space
