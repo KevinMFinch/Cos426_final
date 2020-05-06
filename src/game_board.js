@@ -6,6 +6,10 @@ const NORTH = 2;
 const EAST = 3;
 const SOUTH = 4;
 
+// directions that be input for players to turn
+const LEFT = 5;
+const RIGHT = 6;
+
 // Constants for THREE Vectors
 const Y_HEIGHT = 0; // Constant height and should not change because it is a flat plane
 const DELTA_X = new THREE.Vector(1.0, 0.0, 0.0); // How much moving up or down changes the position of the player 
@@ -68,7 +72,7 @@ gameBoard.movePlayer = function(player_id, direction) {
 		console.log("The player", player_id, "is not a valid player!");
 	}
 	// Check if direction is valid
-	if (direction != WEST && direction != EAST && direction != NORTH && direction != SOUTH) {
+	if (direction != LEFT && direction != RIGHT) {
 		console.log("The direction", direction, "is not a valid direction!");
 	}
 
@@ -84,7 +88,7 @@ gameBoard.movePlayer = function(player_id, direction) {
 		opposite_player = this.PLAYER_ONE;
 	}
 
-	if (direction == NORTH ) {
+	if (player.direction == NORTH ) {
 		// If facing the top wall and are about to collide, turn right
 		if (player.position[0] == 0) {
 			player.direction = EAST;
@@ -92,7 +96,12 @@ gameBoard.movePlayer = function(player_id, direction) {
 		// Otherwise move towards the wall
 		else {
 			player.position[0] -= 1;
-			player.direction = direction;
+			if (direction == LEFT) {
+				player.direction = WEST;
+			}
+			else {
+				player.direction = EAST;
+			}
 		}
 	}
 	else if (direction == SOUTH) {
@@ -103,7 +112,12 @@ gameBoard.movePlayer = function(player_id, direction) {
 		// Otherwise move towards the wall
 		else {
 			player.position[0] += 1;
-			player.direction = direction;
+			if (direction == LEFT) {
+				player.direction = EAST;
+			}
+			else {
+				player.direction = WEST;
+			}
 		}
 	}
 	else if (direction == WEST) {
@@ -114,9 +128,15 @@ gameBoard.movePlayer = function(player_id, direction) {
 		// Otherwise move towards the wall
 		else {
 			player.position[1] -= 1;
-			player.direction = direction;
+
+			if (direction == LEFT) {
+				player.direction = NORTH;
+			}
+			else {
+				player.direction = SOUTH;
+			}
 		}
-	}
+		}
 	// else the direction must be EAST
 	else {
 		// If facing the right wall and are about to collide, turn down
@@ -126,19 +146,28 @@ gameBoard.movePlayer = function(player_id, direction) {
 		// Otherwise move towards the wall
 		else {
 			player.position[1] += 1;
-			player.direction = direction;
+
+			if (direction == LEFT) {
+				player.direction = SOUTH;
+			}
+			else {
+				player.direction = NORTH;
+			}
 		}
 
 	}
 
 	
-	this.board[player.position[0]][player.position[1]] = this.player.id;
-	let updated_pos = updatedPlayerPosition(player);
 	// if the current position has been covered by the opponent, trigger the end game
-	if (this.board[player.position[0]][player.position[1]] == opposite_player.id) {
+	let square_id = this.board[player.position[0]][player.position[1]]
+	if (square_id == opposite_player.id || square_id == player.id) {
 		player.lose = true;
 	}
-
+	else {
+		this.board[player.position[0]][player.position[1]] = this.player.id;
+	}
+	
+	let updated_pos = updatedPlayerPosition(player);
 	return updated_pos;
 };
 
