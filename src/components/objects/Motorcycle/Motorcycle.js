@@ -6,6 +6,9 @@ import MODEL_ONE from './1388 Motorcycle.obj';
 import MAT_ONE from './1388 Motorcycle.mtl';
 import MODEL_TWO from './Motorcycle_1388.obj';
 import MAT_TWO from './Motorcycle_1388.mtl';
+import {
+    Vector3
+  } from 'three';
 
 class Motorcycle extends Group {
     constructor(parent, playerId) {
@@ -39,15 +42,16 @@ class Motorcycle extends Group {
     update(timeStamp) {
         switch (timeStamp.key) {
             case "ArrowLeft":
-                this.rotateY(Math.PI / 2);
+                this.rotateY(Math.PI);
 
             case "ArrowRight":
-                this.rotateY(- Math.PI / 2);
-                
+                this.rotateY(-Math.PI / 2);
         }
-        
-        // Advance tween animations, if any exist
-        
+        // var rot = new Vector3();
+        // this.getWorldDirection(rot);
+        // const x = rot.normalize();
+        // this.position.set(this.position.clone().add(x.multiplyScalar(0.1)));
+        // const y = 0;
     }
 }
 

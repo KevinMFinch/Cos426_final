@@ -58,7 +58,7 @@ class SeedScene extends Scene {
         wallPlaneLeft.rotateY(Math.PI / 2);
 
         const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
-        this.add(floorPlane, redMotor, ...wallPlanes, lights);
+        this.add(floorPlane, redMotor, yellowMotor, ...wallPlanes, lights);
 
         // Populate GUI
         this.state.gui.add(this.state, 'rotationSpeed', -5, 5);
