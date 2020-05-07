@@ -19,6 +19,7 @@ import {
     boardSizeWorld,
     LEFT,
     RIGHT,
+    turnAngle
 } from '../../../constants.js';
 
 class Motorcycle extends Group {
@@ -56,16 +57,16 @@ class Motorcycle extends Group {
     // 0 is left, 1 is right
     switch (dir) {
       case LEFT: {
-        this.rotateY(Math.PI / 2);
+        this.rotateY(turnAngle);
         const axis = new Vector3(0, 1, 0);
-        const angle = Math.PI / 2;
+        const angle = turnAngle;
         this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
         break;
       }
       case RIGHT: {
-        this.rotateY(-Math.PI / 2);
+        this.rotateY(-turnAngle);
         const axis = new Vector3(0, 1, 0);
-        const angle = -Math.PI / 2;
+        const angle = -turnAngle;
         this.state.direction = this.state.direction.applyAxisAngle(axis, angle);
         break;
       }
@@ -80,12 +81,12 @@ class Motorcycle extends Group {
     this.position.set(move.x, move.y, move.z);
 
     const boxSize = boardSizeWorld / 20;
-    const geometry = new BoxGeometry( boxSize, 1, boxSize ); 
+    const geometry = new BoxGeometry(boxSize, 1, boxSize);
     let material = undefined;
     if (this.state.playerId === 1) {
       material = new MeshBasicMaterial({color: 0x0BF7FE});
     } else {
-      material = new MeshBasicMaterial({color: 0xFE0BAF})
+      material = new MeshBasicMaterial({color: 0xFE0BAF});
     }
     const cube = new Mesh(geometry, material);
 

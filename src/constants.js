@@ -2,6 +2,7 @@ import { Vector3 } from 'three';
 
 export const boardSizeWorld = 300;
 export const boardSizeGame = 30;
+export const turnAngle = Math.PI / 18;
 
 // Constants defining the directions
 export const WEST = 1;
