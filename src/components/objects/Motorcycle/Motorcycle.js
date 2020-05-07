@@ -16,11 +16,11 @@ import MAT_ONE from './1388 Motorcycle.mtl';
 import MODEL_TWO from './Motorcycle_1388.obj';
 import MAT_TWO from './Motorcycle_1388.mtl';
 import {
-    boardSizeWorld,
-    LEFT,
-    RIGHT,
-    turnAngle,
-    trailMaxLength,
+  boardSizeWorld,
+  LEFT,
+  RIGHT,
+  turnAngle,
+  trailMaxLength,
 } from '../../../constants.js';
 
 class Motorcycle extends Group {
@@ -93,9 +93,13 @@ class Motorcycle extends Group {
       const geometry = new BoxGeometry(1, 1, 1);
       let material = undefined;
       if (this.state.playerId === 1) {
-        material = new MeshBasicMaterial({color: 0x0BF7FE});
+        material = new MeshBasicMaterial({
+          color: 0x0BF7FE
+        });
       } else {
-        material = new MeshBasicMaterial({color: 0xFE0BAF});
+        material = new MeshBasicMaterial({
+          color: 0xFE0BAF
+        });
       }
       const cube = new Mesh(geometry, material);
       cube.position.set(old.x, 0, old.z);

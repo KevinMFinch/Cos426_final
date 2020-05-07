@@ -116,11 +116,14 @@ class SeedScene extends Scene {
     // Player 1 bike
     if (this.state.keysDown.ArrowLeft) {
       this.state.players[0].bike.updateDir(LEFT);
-    } else if (this.state.keysDown.ArrowRight) {
+    }
+    if (this.state.keysDown.ArrowRight) {
       this.state.players[0].bike.updateDir(RIGHT);
-    } else if (this.state.keysDown.KeyA) { // Player 2 bike
+    }
+    if (this.state.keysDown.KeyA) { // Player 2 bike
       this.state.players[1].bike.updateDir(LEFT);
-    } else if (this.state.keysDown.KeyD) {
+    }
+    if (this.state.keysDown.KeyD) {
       this.state.players[1].bike.updateDir(RIGHT);
     }
   }

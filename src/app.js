@@ -18,67 +18,73 @@ import {
   SeedScene
 } from 'scenes';
 
-// Initialize core ThreeJS components
-const scene = new SeedScene();
-const camera = new PerspectiveCamera();
-const renderer = new WebGLRenderer({
-  antialias: true
-});
+document.addEventListener('click', () => initGame());
 
-// Set up camera
-camera.position.set(0, 300, -300);
-camera.lookAt(new Vector3(0, 0, 0));
+const initGame = () => {
+  document.getElementById('menu-screen').style.display = 'none';
+  console.log('iit game called');
+  // Initialize core ThreeJS components
+  const scene = new SeedScene();
+  const camera = new PerspectiveCamera();
+  const renderer = new WebGLRenderer({
+    antialias: true
+  });
 
-// Set up renderer, canvas, and minor CSS adjustments
-renderer.setPixelRatio(window.devicePixelRatio);
-const canvas = renderer.domElement;
-canvas.style.display = 'block'; // Removes padding below canvas
-document.body.style.margin = 0; // Removes margin around page
-document.body.style.overflow = 'hidden'; // Fix scrolling
-document.body.appendChild(canvas);
+  // Set up camera
+  camera.position.set(0, 300, -300);
+  camera.lookAt(new Vector3(0, 0, 0));
 
-// Set up controls
-const controls = new OrbitControls(camera, canvas);
-controls.enablePan = false;
-controls.enableKeys = false;
-controls.minDistance = 4;
-controls.update();
+  // Set up renderer, canvas, and minor CSS adjustments
+  renderer.setPixelRatio(window.devicePixelRatio);
+  const canvas = renderer.domElement;
+  canvas.style.display = 'block'; // Removes padding below canvas
+  document.body.style.margin = 0; // Removes margin around page
+  document.body.style.overflow = 'hidden'; // Fix scrolling
+  document.body.appendChild(canvas);
 
-// Render loop
-const onAnimationFrameHandler = (timeStamp) => {
+  // Set up controls
+  const controls = new OrbitControls(camera, canvas);
+  controls.enablePan = false;
+  controls.enableKeys = false;
+  controls.minDistance = 4;
   controls.update();
-  renderer.render(scene, camera);
-  scene.update && scene.update(timeStamp);
+
+  // Render loop
+  const onAnimationFrameHandler = (timeStamp) => {
+    controls.update();
+    renderer.render(scene, camera);
+    scene.update && scene.update(timeStamp);
+    window.requestAnimationFrame(onAnimationFrameHandler);
+  };
   window.requestAnimationFrame(onAnimationFrameHandler);
-};
-window.requestAnimationFrame(onAnimationFrameHandler);
 
-// Resize Handler
-const windowResizeHandler = () => {
-  const {
-    innerHeight,
-    innerWidth
-  } = window;
-  renderer.setSize(innerWidth, innerHeight);
-  camera.aspect = innerWidth / innerHeight;
-  camera.updateProjectionMatrix();
-};
-windowResizeHandler();
-window.addEventListener('resize', windowResizeHandler, false);
+  // Resize Handler
+  const windowResizeHandler = () => {
+    const {
+      innerHeight,
+      innerWidth
+    } = window;
+    renderer.setSize(innerWidth, innerHeight);
+    camera.aspect = innerWidth / innerHeight;
+    camera.updateProjectionMatrix();
+  };
+  windowResizeHandler();
+  window.addEventListener('resize', windowResizeHandler, false);
 
-const onKeyDown = (keyEvent) => {
-  const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
-  if (turningMoves.includes(keyEvent.code)) {
-    scene.keyUpdate && scene.keyUpdate(keyEvent.code, true);
-  }
-};
+  const onKeyDown = (keyEvent) => {
+    const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
+    if (turningMoves.includes(keyEvent.code)) {
+      scene.keyUpdate && scene.keyUpdate(keyEvent.code, true);
+    }
+  };
 
-const onKeyUp = (keyEvent) => {
-  const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
-  if (turningMoves.includes(keyEvent.code)) {
-    scene.keyUpdate && scene.keyUpdate(keyEvent.code, false);
-  }
-};
+  const onKeyUp = (keyEvent) => {
+    const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
+    if (turningMoves.includes(keyEvent.code)) {
+      scene.keyUpdate && scene.keyUpdate(keyEvent.code, false);
+    }
+  };
 
-window.addEventListener('keydown', onKeyDown);
-window.addEventListener('keyup', onKeyUp);
+  window.addEventListener('keydown', onKeyDown);
+  window.addEventListener('keyup', onKeyUp);
+}
