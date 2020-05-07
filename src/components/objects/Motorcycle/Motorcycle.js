@@ -31,7 +31,8 @@ class Motorcycle extends Group {
     this.state = {
       gui: parent.state.gui,
       direction: playerId === 1 ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1),
-      playerId
+      playerId,
+      lost: false,
     };
 
     // Load object
@@ -74,24 +75,31 @@ class Motorcycle extends Group {
   }
 
   update(timeStamp, scene) {
-    const x = this.state.direction.clone();
-    const old = this.position.clone();
-    const move = this.position.clone().add(x.multiplyScalar(1));
+    if (!this.state.lost) {
+      const x = this.state.direction.clone();
+      const old = this.position.clone();
+      const move = this.position.clone().add(x.multiplyScalar(1));
 
-    this.position.set(move.x, move.y, move.z);
+      this.position.set(move.x, move.y, move.z);
+      if (this.position.x < -boardSizeWorld / 2 || this.position.x > boardSizeWorld / 2 || this.position.z > boardSizeWorld / 2 || this.position.z < -boardSizeWorld / 2) {
+        console.log(this.state.playerId, "out of bounds");
+        this.state.lost = true;
+      }
 
-    const boxSize = boardSizeWorld / 20;
-    const geometry = new BoxGeometry(boxSize, 1, boxSize);
-    let material = undefined;
-    if (this.state.playerId === 1) {
-      material = new MeshBasicMaterial({color: 0x0BF7FE});
-    } else {
-      material = new MeshBasicMaterial({color: 0xFE0BAF});
+      const boxSize = boardSizeWorld / 20;
+      const geometry = new BoxGeometry(1, 1, 1);
+      let material = undefined;
+      if (this.state.playerId === 1) {
+        material = new MeshBasicMaterial({color: 0x0BF7FE});
+      } else {
+        material = new MeshBasicMaterial({color: 0xFE0BAF});
+      }
+      const cube = new Mesh(geometry, material);
+
+      cube.position.set(old.x, 0, old.z);
+      scene.state.trails.push(cube);
+      scene.add(cube);
     }
-    const cube = new Mesh(geometry, material);
-
-    cube.position.set(old.x, 0, old.z);
-    scene.add(cube);
   }
 }
 

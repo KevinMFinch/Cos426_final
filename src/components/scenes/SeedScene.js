@@ -49,6 +49,7 @@ class SeedScene extends Scene {
       rotationSpeed: 1,
       updateList: [],
       players: [playerOne, playerTwo],
+      trails: [],
     };
 
     // Set background to a nice color
@@ -124,6 +125,7 @@ class SeedScene extends Scene {
     for (const obj of updateList) {
       obj.update(timeStamp, this);
     }
+    console.log('trail length', this.state.trails.length);
   }
 }
 
