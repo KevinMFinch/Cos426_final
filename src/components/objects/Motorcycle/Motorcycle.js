@@ -19,7 +19,8 @@ import {
     boardSizeWorld,
     LEFT,
     RIGHT,
-    turnAngle
+    turnAngle,
+    trailMaxLength,
 } from '../../../constants.js';
 
 class Motorcycle extends Group {
@@ -33,6 +34,7 @@ class Motorcycle extends Group {
       direction: playerId === 1 ? new Vector3(0, 0, -1) : new Vector3(0, 0, 1),
       playerId,
       lost: false,
+      trailCount: 0,
     };
 
     // Load object
@@ -75,6 +77,9 @@ class Motorcycle extends Group {
   }
 
   update(timeStamp, scene) {
+    const playerId = this.state.playerId;
+    const trailArray = playerId === 1 ? scene.state.trailsPlayer1 : scene.state.trailsPlayer2;
+
     if (!this.state.lost) {
       const x = this.state.direction.clone();
       const old = this.position.clone();
@@ -82,11 +87,9 @@ class Motorcycle extends Group {
 
       this.position.set(move.x, move.y, move.z);
       if (this.position.x < -boardSizeWorld / 2 || this.position.x > boardSizeWorld / 2 || this.position.z > boardSizeWorld / 2 || this.position.z < -boardSizeWorld / 2) {
-        console.log(this.state.playerId, "out of bounds");
         this.state.lost = true;
       }
 
-      const boxSize = boardSizeWorld / 20;
       const geometry = new BoxGeometry(1, 1, 1);
       let material = undefined;
       if (this.state.playerId === 1) {
@@ -95,10 +98,15 @@ class Motorcycle extends Group {
         material = new MeshBasicMaterial({color: 0xFE0BAF});
       }
       const cube = new Mesh(geometry, material);
-
       cube.position.set(old.x, 0, old.z);
-      scene.state.trails.push(cube);
+      cube.name = playerId + '_cube_' + this.state.trailCount;
+      this.state.trailCount++;
+      trailArray.push(cube);
       scene.add(cube);
+      if (trailArray.length > trailMaxLength) {
+        const toRemove = scene.getObjectByName(trailArray.shift().name);
+        scene.remove(toRemove);
+      }
     }
   }
 }

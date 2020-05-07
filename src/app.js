@@ -69,8 +69,16 @@ window.addEventListener('resize', windowResizeHandler, false);
 const onKeyDown = (keyEvent) => {
   const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
   if (turningMoves.includes(keyEvent.code)) {
-    scene.turnBike && scene.turnBike(keyEvent.code);
+    scene.keyUpdate && scene.keyUpdate(keyEvent.code, true);
+  }
+};
+
+const onKeyUp = (keyEvent) => {
+  const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
+  if (turningMoves.includes(keyEvent.code)) {
+    scene.keyUpdate && scene.keyUpdate(keyEvent.code, false);
   }
 };
 
 window.addEventListener('keydown', onKeyDown);
+window.addEventListener('keyup', onKeyUp);
