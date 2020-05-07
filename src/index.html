@@ -12,13 +12,18 @@
     color: white;
   }
 
-  #menu-screen {
+  #menu-screen,
+  #finish-screen {
     display: flex;
     align-items: center;
     justify-content: center;
     flex-direction: column;
     text-align: center;
     padding-top: 10em;
+  }
+
+  #finish-screen {
+    display: none;
   }
 
   #startButton {
@@ -47,6 +52,10 @@
   <div id='menu-screen'>
     <h1 style="text-align: center;"> PrinceTron Legacy</h1>
     <button id='startButton'>Start Game!</button>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+  <div id='finish-screen'>
+    <h1>Here is a winner screen</h1>
   </div>
 </body>
 

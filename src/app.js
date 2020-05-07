@@ -18,16 +18,18 @@ import {
   SeedScene
 } from 'scenes';
 
-document.addEventListener('click', () => initGame());
+document.getElementById('startButton').addEventListener('click', () => initGame());
 
 const initGame = () => {
   document.getElementById('menu-screen').style.display = 'none';
   console.log('iit game called');
   // Initialize core ThreeJS components
+  const canvas = document.getElementById('gameCanvas');
   const scene = new SeedScene();
   const camera = new PerspectiveCamera();
   const renderer = new WebGLRenderer({
-    antialias: true
+    antialias: true,
+    canvas
   });
 
   // Set up camera
@@ -36,7 +38,6 @@ const initGame = () => {
 
   // Set up renderer, canvas, and minor CSS adjustments
   renderer.setPixelRatio(window.devicePixelRatio);
-  const canvas = renderer.domElement;
   canvas.style.display = 'block'; // Removes padding below canvas
   document.body.style.margin = 0; // Removes margin around page
   document.body.style.overflow = 'hidden'; // Fix scrolling
@@ -79,6 +80,9 @@ const initGame = () => {
   };
 
   const onKeyUp = (keyEvent) => {
+    if (keyEvent.code === 'KeyM') {
+      endGame();
+    }
     const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
     if (turningMoves.includes(keyEvent.code)) {
       scene.keyUpdate && scene.keyUpdate(keyEvent.code, false);
@@ -87,4 +91,11 @@ const initGame = () => {
 
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
+}
+
+const endGame = () => {
+  console.log('ending');
+  const canvas = document.getElementById('gameCanvas');
+  canvas.style.display = 'none';
+  document.getElementById('finish-screen').style.display = 'flex';
 }
