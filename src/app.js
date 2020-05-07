@@ -98,4 +98,5 @@ const endGame = () => {
   const canvas = document.getElementById('gameCanvas');
   canvas.style.display = 'none';
   document.getElementById('finish-screen').style.display = 'flex';
+  document.getElementById('winnerText').innerText = 'winner is player 1';
 }
