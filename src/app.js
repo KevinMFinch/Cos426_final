@@ -48,9 +48,9 @@ const initGame = () => {
 
   var params = {
     exposure: 1,
-    bloomStrength: 1.5,
+    bloomStrength: 0.7,
     bloomThreshold: 0,
-    bloomRadius: 1
+    bloomRadius: 0
   };
 
   const renderer = new WebGLRenderer({
