@@ -22,6 +22,7 @@ document.getElementById('startButton').addEventListener('click', () => initGame(
 
 const initGame = () => {
   document.getElementById('menu-screen').style.display = 'none';
+  document.getElementById('finish-screen').style.display = 'none';
   console.log('iit game called');
   // Initialize core ThreeJS components
   const canvas = document.getElementById('gameCanvas');
@@ -99,4 +100,5 @@ const endGame = () => {
   canvas.style.display = 'none';
   document.getElementById('finish-screen').style.display = 'flex';
   document.getElementById('winnerText').innerText = 'winner is player 1';
+  document.getElementById('replayButton').addEventListener('click', () => initGame());
 }
