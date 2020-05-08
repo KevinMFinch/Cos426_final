@@ -9,7 +9,8 @@
 import {
   WebGLRenderer,
   PerspectiveCamera,
-  Vector3
+  Vector3,
+  Vector2
 } from 'three';
 import {
   OrbitControls
@@ -17,6 +18,15 @@ import {
 import {
   SeedScene
 } from 'scenes';
+import {
+  EffectComposer
+} from 'three/examples/jsm/postprocessing/EffectComposer.js';
+import {
+  UnrealBloomPass
+} from 'three/examples/jsm/postprocessing/UnrealBloomPass.js';
+import {
+  RenderPass
+} from 'three/examples/jsm/postprocessing/RenderPass.js';
 
 document.getElementById('startButton').addEventListener('click', () => initGame());
 document.getElementById('replayButton').addEventListener('click', () => initGame());
@@ -27,10 +37,34 @@ const initGame = () => {
   document.getElementById('finish-screen').style.display = 'none';
   // Initialize core ThreeJS components
   const scene = new SeedScene(endGame);
-  const camera = new PerspectiveCamera();
+
+  // glow
+  var composer;
+
+  var params = {
+    exposure: 1,
+    bloomStrength: 1.5,
+    bloomThreshold: 0,
+    bloomRadius: 1
+  };
+
   const renderer = new WebGLRenderer({
     antialias: true,
   });
+  const camera = new PerspectiveCamera();
+
+  const renderScene = new RenderPass( scene, camera );
+
+  const vec = new Vector2( window.innerWidth, window.innerHeight );
+  const bloomPass = new UnrealBloomPass(vec, 1.5, 0.4, 0.85 );
+  bloomPass.threshold = params.bloomThreshold;
+  bloomPass.strength = params.bloomStrength;
+  bloomPass.radius = params.bloomRadius;
+
+  composer = new EffectComposer( renderer );
+  composer.setSize( window.innerWidth, window.innerHeight );
+  composer.addPass( renderScene );
+  composer.addPass( bloomPass );
 
   // Set up camera
   camera.position.set(0, 300, -300);
@@ -54,7 +88,7 @@ const initGame = () => {
   // Render loop
   const onAnimationFrameHandler = (timeStamp) => {
     controls.update();
-    renderer.render(scene, camera);
+    composer.render(scene, camera);
     scene.update && scene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
   };

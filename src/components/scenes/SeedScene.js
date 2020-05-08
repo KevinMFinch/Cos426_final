@@ -8,6 +8,7 @@ import {
   MeshBasicMaterial,
   GridHelper,
   Mesh,
+  Vector2,
   Box3,
   DoubleSide
 } from 'three';
