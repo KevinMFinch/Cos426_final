@@ -1,6 +1,7 @@
 import * as Dat from 'dat.gui';
 import {
   Scene,
+  MeshPhongMaterial,
   BoxGeometry,
   Color,
   PlaneGeometry,
@@ -75,8 +76,20 @@ class SeedScene extends Scene {
     const shortWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
     const longWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
 
+    const shortWallGeometry2 = new PlaneGeometry(boardSizeWorld *0.85,5, 1);
+    const longWallGeometry2 = new PlaneGeometry(boardSizeWorld * 0.85, 5, 1);
+
+    const shortWallGeometry3 = new PlaneGeometry(boardSizeWorld *0.6, 5, 1);
+    const longWallGeometry3 = new PlaneGeometry(boardSizeWorld * 0.6, 5, 1);
+
     // Grid flooring
-    const myGridHelper = new GridHelper(boardSizeWorld, 20, 0xFF9933, 0xFF9933);
+    const myGridHelper = new GridHelper(boardSizeWorld, 2, 0xFF9933, 0xFF9933);
+
+    // var planeGeometry1 = new PlaneGeometry( boardSizeWorld + 20 , boardSizeWorld + 20, 10, 10);
+    // var plane1 = new Mesh( planeGeometry1, new MeshPhongMaterial({color: 0x000000}));
+    // plane1.position.y = -100;
+    // plane1.rotation.x = -Math.PI / 2;
+
 
     const wallMat = new MeshBasicMaterial({
       color: 0xFF9933,
@@ -94,9 +107,37 @@ class SeedScene extends Scene {
     wallPlaneRight.rotateY(Math.PI / 2);
     wallPlaneLeft.position.set(-boardSizeWorld / 2, 0, 0);
     wallPlaneLeft.rotateY(Math.PI / 2);
-
     const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
-    this.add(myGridHelper, redMotor, yellowMotor, ...wallPlanes, lights);
+
+
+     // second set of walls 
+     const wallPlaneTop2 = new Mesh(longWallGeometry2, wallMat);
+     const wallPlaneBot2 = new Mesh(longWallGeometry2, wallMat);
+     const wallPlaneRight2 = new Mesh(shortWallGeometry2, wallMat);
+     const wallPlaneLeft2 = new Mesh(shortWallGeometry2, wallMat);
+     wallPlaneTop2.position.set(0, -50, boardSizeWorld*0.85 / 2);
+     wallPlaneBot2.position.set(0, -50, -boardSizeWorld*0.85 / 2);
+     wallPlaneRight2.position.set(boardSizeWorld *0.85/ 2, -50, 0);
+     wallPlaneRight2.rotateY(Math.PI / 2);
+     wallPlaneLeft2.position.set(-boardSizeWorld *0.85 / 2, - 50, 0);
+     wallPlaneLeft2.rotateY(Math.PI / 2);
+     const wallPlanes2 = [wallPlaneTop2, wallPlaneBot2, wallPlaneRight2, wallPlaneLeft2];
+    
+    // third set of walls 
+    const wallPlaneTop3 = new Mesh(longWallGeometry3 , wallMat);
+    const wallPlaneBot3 = new Mesh(longWallGeometry3 , wallMat);
+    const wallPlaneRight3 = new Mesh(shortWallGeometry3 , wallMat);
+    const wallPlaneLeft3 = new Mesh(shortWallGeometry3 , wallMat);
+    wallPlaneTop3.position.set(0, -100, boardSizeWorld *0.6/ 2);
+    wallPlaneBot3.position.set(0, -100, -boardSizeWorld *0.6/ 2);
+    wallPlaneRight3.position.set(boardSizeWorld * .6/ 2, -100, 0);
+    wallPlaneRight3.rotateY(Math.PI / 2);
+    wallPlaneLeft3.position.set(-boardSizeWorld *.6/ 2, -100, 0);
+    wallPlaneLeft3.rotateY(Math.PI / 2);
+    const wallPlanes3 = [wallPlaneTop3, wallPlaneBot3, wallPlaneRight3, wallPlaneLeft3];
+
+    
+    this.add(myGridHelper, redMotor, yellowMotor, ...wallPlanes, lights, ...wallPlanes2, ...wallPlanes3);
   }
 
   addToUpdateList(object) {
