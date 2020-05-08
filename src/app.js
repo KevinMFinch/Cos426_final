@@ -21,14 +21,19 @@ import {
 document.getElementById('startButton').addEventListener('click', () => initGame());
 document.getElementById('replayButton').addEventListener('click', () => initGame());
 
+
+let scene = null;
+let camera = null;
+let renderer = null;
+
 const initGame = () => {
   console.log('init game');
   document.getElementById('menu-screen').style.display = 'none';
   document.getElementById('finish-screen').style.display = 'none';
   // Initialize core ThreeJS components
-  const scene = new SeedScene(endGame);
-  const camera = new PerspectiveCamera();
-  const renderer = new WebGLRenderer({
+  scene = new SeedScene(endGame);
+  camera = new PerspectiveCamera();
+  renderer = new WebGLRenderer({
     antialias: true,
   });
 
@@ -56,7 +61,8 @@ const initGame = () => {
     controls.update();
     renderer.render(scene, camera);
     scene.update && scene.update(timeStamp);
-    window.requestAnimationFrame(onAnimationFrameHandler);
+    if (!scene.state.gameOver)
+      window.requestAnimationFrame(onAnimationFrameHandler);
   };
   window.requestAnimationFrame(onAnimationFrameHandler);
 
