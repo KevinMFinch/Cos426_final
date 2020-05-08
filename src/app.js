@@ -19,18 +19,17 @@ import {
 } from 'scenes';
 
 document.getElementById('startButton').addEventListener('click', () => initGame());
+document.getElementById('replayButton').addEventListener('click', () => initGame());
 
 const initGame = () => {
+  console.log('init game');
   document.getElementById('menu-screen').style.display = 'none';
   document.getElementById('finish-screen').style.display = 'none';
-  console.log('iit game called');
   // Initialize core ThreeJS components
-  const canvas = document.getElementById('gameCanvas');
-  const scene = new SeedScene();
+  const scene = new SeedScene(endGame);
   const camera = new PerspectiveCamera();
   const renderer = new WebGLRenderer({
     antialias: true,
-    canvas
   });
 
   // Set up camera
@@ -38,6 +37,7 @@ const initGame = () => {
   camera.lookAt(new Vector3(0, 0, 0));
 
   // Set up renderer, canvas, and minor CSS adjustments
+  const canvas = renderer.domElement;
   renderer.setPixelRatio(window.devicePixelRatio);
   canvas.style.display = 'block'; // Removes padding below canvas
   document.body.style.margin = 0; // Removes margin around page
@@ -81,9 +81,6 @@ const initGame = () => {
   };
 
   const onKeyUp = (keyEvent) => {
-    if (keyEvent.code === 'KeyM') {
-      endGame();
-    }
     const turningMoves = ['KeyA', 'KeyD', 'ArrowLeft', 'ArrowRight'];
     if (turningMoves.includes(keyEvent.code)) {
       scene.keyUpdate && scene.keyUpdate(keyEvent.code, false);
@@ -92,13 +89,11 @@ const initGame = () => {
 
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
-}
+};
 
-const endGame = () => {
-  console.log('ending');
-  const canvas = document.getElementById('gameCanvas');
-  canvas.style.display = 'none';
+const endGame = (loserId) => {
+  const winnerId = loserId === 1 ? 2 : 1;
+  document.querySelector('canvas').remove();
   document.getElementById('finish-screen').style.display = 'flex';
-  document.getElementById('winnerText').innerText = 'winner is player 1';
-  document.getElementById('replayButton').addEventListener('click', () => initGame());
-}
+  document.getElementById('winnerText').innerText = 'winner is player ' + winnerId;
+};

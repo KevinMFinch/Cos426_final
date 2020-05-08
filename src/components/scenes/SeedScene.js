@@ -23,7 +23,7 @@ import {
 } from '../../constants.js';
 
 class SeedScene extends Scene {
-  constructor() {
+  constructor(endGame) {
     // Call parent Scene() constructor
     super();
 
@@ -60,6 +60,9 @@ class SeedScene extends Scene {
         ArrowLeft: false,
         ArrowRight: false,
       },
+      gameOver: false,
+      endGameFunc: endGame,
+      loserId: -1,
     };
 
     // Set background to a nice color
@@ -134,17 +137,24 @@ class SeedScene extends Scene {
   }
 
   update(timeStamp) {
-    const {
-      updateList
-    } = this.state;
+    if (!this.state.gameOver) {
+      const {
+        updateList
+      } = this.state;
 
-    this.turnBikes();
+      this.turnBikes();
 
-    // Call update for each object in the updateList
-    for (const obj of updateList) {
-      obj.update(timeStamp, this);
+      // Call update for each object in the updateList
+      for (const obj of updateList) {
+        obj.update(timeStamp, this);
+      }
+
+      if (this.state.gameOver) {
+        this.state.endGameFunc(this.state.loserId);
+      }
     }
   }
+
 }
 
 export default SeedScene;

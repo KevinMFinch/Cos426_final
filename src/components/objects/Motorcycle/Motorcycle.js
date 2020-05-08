@@ -98,13 +98,13 @@ class Motorcycle extends Group {
     const trailArray = playerId === 1 ? scene.state.trailsPlayer1 : scene.state.trailsPlayer2;
     const opposingTrailArray = playerId === 1 ? scene.state.trailsPlayer2 : scene.state.trailsPlayer1;
 
-    if (!this.state.lost) {
+    if (!scene.state.gameOver) {
       const x = this.state.direction.clone();
       const old = this.position.clone();
       const move = this.position.clone().add(x.multiplyScalar(1));
 
       this.position.set(move.x, move.y, move.z);
-      var bbox = new Box3().setFromObject( this );
+      const bbox = new Box3().setFromObject(this);
 
       if (this.position.x < -boardSizeWorld / 2 || this.position.x > boardSizeWorld / 2 || this.position.z > boardSizeWorld / 2 || this.position.z < -boardSizeWorld / 2) {
         this.state.lost = true;
@@ -123,15 +123,18 @@ class Motorcycle extends Group {
       }
 
       // collisions check for self
-      if (this.hasCollided(trailArray, bbox) == true) {
-        console.log(this.state.playerId, "has collided into self");
+      if (this.hasCollided(trailArray, bbox)) {
         this.state.lost = true;
       }
 
       // collisions check for opposing player
-      if (this.hasCollided(opposingTrailArray, bbox) == true) {
-        console.log(this.state.playerId, "has collided into other player");
+      if (this.hasCollided(opposingTrailArray, bbox)) {
         this.state.lost = true;
+      }
+
+      if (this.state.lost) {
+        scene.state.gameOver = true;
+        scene.state.loserId = this.state.playerId;
       }
 
       const cube = new Mesh(geometry, material);
