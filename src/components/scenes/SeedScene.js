@@ -8,6 +8,7 @@ import {
   MeshBasicMaterial,
   GridHelper,
   Mesh,
+  Box3,
   DoubleSide
 } from 'three';
 import {
@@ -23,7 +24,7 @@ import {
 } from '../../constants.js';
 
 class SeedScene extends Scene {
-  constructor() {
+  constructor(endGame) {
     // Call parent Scene() constructor
     super();
 
@@ -50,7 +51,19 @@ class SeedScene extends Scene {
       rotationSpeed: 1,
       updateList: [],
       players: [playerOne, playerTwo],
-      trails: [],
+      trailsPlayer1: [],
+      trailsPlayer2: [],
+      trailCount1: 0,
+      trailCount2: 0,
+      keysDown: {
+        KeyA: false,
+        KeyD: false,
+        ArrowLeft: false,
+        ArrowRight: false,
+      },
+      gameOver: false,
+      endGameFunc: endGame,
+      loserId: -1,
     };
 
     // Set background to a nice color
@@ -144,30 +157,45 @@ class SeedScene extends Scene {
     this.state.updateList.push(object);
   }
 
-  turnBike(keyCode) {
+  turnBikes() {
     // Player 1 bike
-    if (keyCode === 'ArrowLeft') {
+    if (this.state.keysDown.ArrowLeft) {
       this.state.players[0].bike.updateDir(LEFT);
-    } else if (keyCode === 'ArrowRight') {
+    }
+    if (this.state.keysDown.ArrowRight) {
       this.state.players[0].bike.updateDir(RIGHT);
-    } else if (keyCode === 'KeyA') { // Player 2 bike
+    }
+    if (this.state.keysDown.KeyA) { // Player 2 bike
       this.state.players[1].bike.updateDir(LEFT);
-    } else {
+    }
+    if (this.state.keysDown.KeyD) {
       this.state.players[1].bike.updateDir(RIGHT);
     }
   }
 
-  update(timeStamp) {
-    const {
-      updateList
-    } = this.state;
-
-    // Call update for each object in the updateList
-    for (const obj of updateList) {
-      obj.update(timeStamp, this);
-    }
-    console.log('trail length', this.state.trails.length);
+  keyUpdate(keyCode, down) {
+    this.state.keysDown[keyCode] = down;
   }
+
+  update(timeStamp) {
+    if (!this.state.gameOver) {
+      const {
+        updateList
+      } = this.state;
+
+      this.turnBikes();
+
+      // Call update for each object in the updateList
+      for (const obj of updateList) {
+        obj.update(timeStamp, this);
+      }
+
+      if (this.state.gameOver) {
+        this.state.endGameFunc(this.state.loserId);
+      }
+    }
+  }
+
 }
 
 export default SeedScene;
