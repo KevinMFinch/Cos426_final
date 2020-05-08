@@ -61,9 +61,8 @@ const initGame = () => {
     controls.update();
     renderer.render(scene, camera);
     scene.update && scene.update(timeStamp);
-    if (!scene.state.gameOver) {
+    if (!scene.state.gameOver)
       window.requestAnimationFrame(onAnimationFrameHandler);
-    }
   };
   window.requestAnimationFrame(onAnimationFrameHandler);
 
