@@ -31,6 +31,11 @@ import {
 document.getElementById('startButton').addEventListener('click', () => initGame());
 document.getElementById('replayButton').addEventListener('click', () => initGame());
 
+
+let scene = null;
+let camera = null;
+let renderer = null;
+
 const initGame = () => {
   console.log('init game');
   document.getElementById('menu-screen').style.display = 'none';
@@ -90,7 +95,8 @@ const initGame = () => {
     controls.update();
     composer.render(scene, camera);
     scene.update && scene.update(timeStamp);
-    window.requestAnimationFrame(onAnimationFrameHandler);
+    if (!scene.state.gameOver)
+      window.requestAnimationFrame(onAnimationFrameHandler);
   };
   window.requestAnimationFrame(onAnimationFrameHandler);
 
