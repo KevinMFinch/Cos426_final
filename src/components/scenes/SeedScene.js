@@ -7,6 +7,7 @@ import {
   MeshBasicMaterial,
   GridHelper,
   Mesh,
+  Box3,
   DoubleSide
 } from 'three';
 import {

@@ -3,7 +3,8 @@ import {
   Mesh,
   MeshBasicMaterial,
   Group,
-  Vector3,
+  Box3,
+  Vector3
 } from 'three';
 import {
   MTLLoader
@@ -19,6 +20,7 @@ import {
   boardSizeWorld,
   LEFT,
   RIGHT,
+  OFFSET,
   turnAngle,
   trailMaxLength,
 } from '../../../constants.js';
@@ -56,6 +58,21 @@ class Motorcycle extends Group {
     parent.addToUpdateList(this);
   }
 
+  // check if player's bounding box has collided with trail meshes, given in array
+  hasCollided(trails, bbox) {
+    if (trails.length < OFFSET || bbox.min.x === Infinity) return false;
+
+    for (let i = 0; i < trails.length - OFFSET; i++) {
+      let trailMeshBBox = new Box3().setFromObject(trails[i]);
+
+      if (bbox.intersectsBox(trailMeshBBox)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // update direction of player based on key
   updateDir(dir) {
     // 0 is left, 1 is right
     switch (dir) {
@@ -79,6 +96,7 @@ class Motorcycle extends Group {
   update(timeStamp, scene) {
     const playerId = this.state.playerId;
     const trailArray = playerId === 1 ? scene.state.trailsPlayer1 : scene.state.trailsPlayer2;
+    const opposingTrailArray = playerId === 1 ? scene.state.trailsPlayer2 : scene.state.trailsPlayer1;
 
     if (!this.state.lost) {
       const x = this.state.direction.clone();
@@ -86,6 +104,8 @@ class Motorcycle extends Group {
       const move = this.position.clone().add(x.multiplyScalar(1));
 
       this.position.set(move.x, move.y, move.z);
+      var bbox = new Box3().setFromObject( this );
+
       if (this.position.x < -boardSizeWorld / 2 || this.position.x > boardSizeWorld / 2 || this.position.z > boardSizeWorld / 2 || this.position.z < -boardSizeWorld / 2) {
         this.state.lost = true;
       }
@@ -101,6 +121,19 @@ class Motorcycle extends Group {
           color: 0xFE0BAF
         });
       }
+
+      // collisions check for self
+      if (this.hasCollided(trailArray, bbox) == true) {
+        console.log(this.state.playerId, "has collided into self");
+        this.state.lost = true;
+      }
+
+      // collisions check for opposing player
+      if (this.hasCollided(opposingTrailArray, bbox) == true) {
+        console.log(this.state.playerId, "has collided into other player");
+        this.state.lost = true;
+      }
+
       const cube = new Mesh(geometry, material);
       cube.position.set(old.x, 0, old.z);
       cube.name = playerId + '_cube_' + this.state.trailCount;

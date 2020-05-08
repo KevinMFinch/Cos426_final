@@ -11,7 +11,7 @@ export const NORTH = 2;
 export const EAST = 3;
 export const SOUTH = 4;
 
-// directions that be input for players to turn
+// Constants representing directions
 export const LEFT = 5;
 export const RIGHT = 6;
 
@@ -19,3 +19,6 @@ export const RIGHT = 6;
 export const Y_HEIGHT = 0; // Constant height and should not change because it is a flat plane
 export const DELTA_X = new Vector3(1.0, 0.0, 0.0); // How much moving up or down changes the position of the player 
 export const DELTA_Z = new Vector3(0.0, 0.0, 1.0); // Hw much moving left or right changes the position of the player
+
+// Constants for collision checking
+export const OFFSET = 10; // number of blocks away from the motorcycle to start checking for collisions
