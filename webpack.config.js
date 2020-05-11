@@ -19,7 +19,12 @@ module.exports = {
         exclude: path.resolve(__dirname, './node_modules/'),
       },
       {
-        test: /\.(jpe?g|png|gif|svg|tga|gltf|babylon|mtl|pcb|pcd|prwm|obj|mat|mp3|ogg)$/i,
+        test: /\.(mtl)$/i,
+        use: path.resolve('plugins/mtl-loader.js'),
+        exclude: path.resolve(__dirname, './node_modules/'),
+      },
+      {
+        test: /\.(jpe?g|png|gif|svg|tga|gltf|glb|babylon|pcb|pcd|prwm|obj|mat|mp3|ogg)$/i,
         use: 'file-loader',
         exclude: path.resolve(__dirname, './node_modules/'),
       },
@@ -27,14 +32,6 @@ module.exports = {
         test: /\.(vert|frag|glsl|shader|txt)$/i,
         use: 'raw-loader',
         exclude: path.resolve(__dirname, './node_modules/'),
-      },
-      {
-        type: 'javascript/auto',
-        test: /\.(json)/,
-        exclude: path.resolve(__dirname, './node_modules/'),
-        use: [{
-          loader: 'file-loader',
-        }, ],
       },
     ],
   },

@@ -12,10 +12,10 @@ import {
 import {
   OBJLoader
 } from 'three/examples/jsm/loaders/OBJLoader.js';
-import MODEL_ONE from './1388 Motorcycle.obj';
-import MAT_ONE from './1388 Motorcycle.mtl';
-import MODEL_TWO from './Motorcycle_1388.obj';
-import MAT_TWO from './Motorcycle_1388.mtl';
+import MODEL from './1388_Motorcycle.obj';
+import MAT_ONE from './1388_Motorcycle.mtl';
+import MAT_TWO from './1388_Motorcycle_Blue.mtl';
+
 import {
   boardSizeWorld,
   LEFT,
@@ -40,19 +40,15 @@ class Motorcycle extends Group {
     };
 
     // Load object
-    const loader = new OBJLoader();
-    const mtlLoader = new MTLLoader();
-    this.name = playerId === 1 ? 'redCycle' : 'yellowCycle';
-    const model = playerId === 1 ? MODEL_ONE : MODEL_TWO;
+    this.name = playerId === 1 ? 'redCycle' : 'blueCycle';
     const mat = playerId === 1 ? MAT_ONE : MAT_TWO;
 
-    mtlLoader.setResourcePath('src/components/objects/Motorcycle/');
-    mtlLoader.load(mat, (material) => {
-      material.preload();
-      loader.setMaterials(material).load(model, (obj) => {
-        this.add(obj);
-      });
+    const objLoader = new OBJLoader();
+    const mtlLoader = new MTLLoader();
+    objLoader.setMaterials(mtlLoader.parse(mat)).load(MODEL, (obj) => {
+      this.add(obj);
     });
+
 
     // Add self to parent's update list
     parent.addToUpdateList(this);

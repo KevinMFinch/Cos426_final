@@ -73,16 +73,16 @@ class SeedScene extends Scene {
     // Add meshes to scene
     const lights = new BasicLights();
     const redMotor = new Motorcycle(this, 1);
-    const yellowMotor = new Motorcycle(this, 2);
+    const blueMotor = new Motorcycle(this, 2);
 
     redMotor.position.set(7.5, 0, 5);
     redMotor.scale.set(.1, .1, .1);
 
-    yellowMotor.position.set(-7.5, 0, 5);
-    yellowMotor.scale.set(.35, .35, .35);
+    blueMotor.position.set(-7.5, 0, 5);
+    blueMotor.scale.set(.1, .1, .1);
 
     this.state.players[0].bike = redMotor;
-    this.state.players[1].bike = yellowMotor;
+    this.state.players[1].bike = blueMotor;
 
     const floorGeometry = new PlaneGeometry(boardSizeWorld, boardSizeWorld, 1);
     floorGeometry.rotateX(-Math.PI / 2);
@@ -151,7 +151,7 @@ class SeedScene extends Scene {
     const wallPlanes3 = [wallPlaneTop3, wallPlaneBot3, wallPlaneRight3, wallPlaneLeft3];
 
 
-    this.add(myGridHelper, redMotor, yellowMotor, ...wallPlanes, lights, ...wallPlanes2, ...wallPlanes3);
+    this.add(myGridHelper, redMotor, blueMotor, ...wallPlanes, lights, ...wallPlanes2, ...wallPlanes3);
   }
 
   addToUpdateList(object) {
