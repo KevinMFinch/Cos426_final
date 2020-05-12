@@ -1,6 +1,6 @@
 import { Vector3 } from 'three';
 
-export const boardSizeWorld = 300;
+export const boardSizeWorld = 400;
 export const boardSizeGame = 30;
 export const turnAngle = 5 * Math.PI / 180;
 export const trailMaxLength = 1200;
@@ -21,4 +21,5 @@ export const DELTA_X = new Vector3(1.0, 0.0, 0.0); // How much moving up or down
 export const DELTA_Z = new Vector3(0.0, 0.0, 1.0); // Hw much moving left or right changes the position of the player
 
 // Constants for collision checking
-export const OFFSET = 10; // number of blocks away from the motorcycle to start checking for collisions
+export const OFFSET = 100; // number of blocks away from the motorcycle to start checking for collisions
+export const SPEED = 1;

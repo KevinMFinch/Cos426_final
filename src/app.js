@@ -10,6 +10,10 @@ import {
   WebGLRenderer,
   PerspectiveCamera,
   Vector3,
+  MeshPhongMaterial,
+  Mesh,
+  FontLoader,
+  TextGeometry,
   Vector2
 } from 'three';
 import {
@@ -31,10 +35,35 @@ import {
 document.getElementById('startButton').addEventListener('click', () => initGame());
 document.getElementById('replayButton').addEventListener('click', () => initGame());
 
+var startGoing = false;
 
-let scene = null;
-let camera = null;
-let renderer = null;
+function Countdown(options) {
+  var timer,
+  instance = this,
+  seconds = options.seconds || 10,
+  updateStatus = options.onUpdateStatus || function () {},
+  counterEnd = options.onCounterEnd || function () {};
+
+  function decrementCounter() {
+    updateStatus(seconds);
+    if (seconds === 0) {
+      counterEnd();
+      instance.stop();
+    }
+    seconds--;
+  }
+
+  this.start = function () {
+    clearInterval(timer);
+    timer = 0;
+    seconds = options.seconds;
+    timer = setInterval(decrementCounter, 1000);
+  };
+
+  this.stop = function () {
+    clearInterval(timer);
+  };
+}
 
 const initGame = () => {
   console.log('init game');
@@ -48,7 +77,7 @@ const initGame = () => {
 
   var params = {
     exposure: 1,
-    bloomStrength: 0.7,
+    bloomStrength: 0.5,
     bloomThreshold: 0,
     bloomRadius: 0
   };
@@ -72,7 +101,7 @@ const initGame = () => {
   composer.addPass( bloomPass );
 
   // Set up camera
-  camera.position.set(0, 300, -300);
+  camera.position.set(320, 110, -320);
   camera.lookAt(new Vector3(0, 0, 0));
 
   // Set up renderer, canvas, and minor CSS adjustments
@@ -90,11 +119,21 @@ const initGame = () => {
   controls.minDistance = 4;
   controls.update();
 
+  var countdown = new Countdown({  
+    seconds: 2,  // number of seconds to count down
+    onUpdateStatus: function(sec){
+      console.log(sec);
+    }, // callback for each second
+    onCounterEnd: function(){ startGoing = true; } // final action
+  });
+
+  countdown.start();
+
   // Render loop
   const onAnimationFrameHandler = (timeStamp) => {
     controls.update();
     composer.render(scene, camera);
-    scene.update && scene.update(timeStamp);
+    if (startGoing) scene.update && scene.update(timeStamp);
     if (!scene.state.gameOver)
       window.requestAnimationFrame(onAnimationFrameHandler);
   };
@@ -129,11 +168,14 @@ const initGame = () => {
 
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
+
+
+
 };
 
 const endGame = (loserId) => {
   const winnerId = loserId === 1 ? 2 : 1;
   document.querySelector('canvas').remove();
   document.getElementById('finish-screen').style.display = 'flex';
-  document.getElementById('winnerText').innerText = 'winner is player ' + winnerId;
+  document.getElementById('winnerText').innerText = 'Player ' + winnerId + ' wins!';
 };

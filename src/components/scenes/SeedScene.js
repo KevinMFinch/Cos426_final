@@ -10,6 +10,8 @@ import {
   Mesh,
   Vector2,
   Box3,
+  VertexColors,
+  AmbientLight,
   DoubleSide
 } from 'three';
 import {
@@ -23,6 +25,43 @@ import {
   LEFT,
   RIGHT,
 } from '../../constants.js';
+
+function makeGradientCube(c1, c2, w, d, h, opacity){
+  if(typeof opacity === 'undefined') opacity = 1.0;
+  if(typeof c1 === 'number') c1 = new Color( c1 );
+  if(typeof c2 === 'number') c2 = new Color( c2 );
+  
+  var cubeGeometry = new BoxGeometry(w, h, d);
+  
+  var cubeMaterial = new MeshPhongMaterial({
+      vertexColors: VertexColors
+  });
+  
+  if(opacity < 1.0){
+      cubeMaterial.opacity = opacity;
+      cubeMaterial.transparent = true;
+  }
+  const black = 0x000000;
+
+  for(var ix=0; ix<12; ++ix){
+      if(ix==4 || ix==5){ //Top edge, all c2
+          // cubeGeometry.faces[ix].vertexColors = [c2,c2,c2];
+          cubeGeometry.faces[ix].vertexColors = [black,black,black];
+          }
+      else if(ix==6 || ix==7){ //Bottom edge, all c1
+          cubeGeometry.faces[ix].vertexColors = [c1,c1,c1];
+          }
+      else if(ix%2 ==0){ //First triangle on each side edge
+          cubeGeometry.faces[ix].vertexColors = [c2,c1,c2];
+          }
+      else{ //Second triangle on each side edge
+          cubeGeometry.faces[ix].vertexColors = [c1,c1,c2];
+          }
+  }
+  
+  return new Mesh(cubeGeometry, cubeMaterial);
+}
+
 
 class SeedScene extends Scene {
   constructor(endGame) {
@@ -48,7 +87,6 @@ class SeedScene extends Scene {
 
     // Init state
     this.state = {
-      gui: new Dat.GUI(), // Create GUI for scene
       rotationSpeed: 1,
       updateList: [],
       players: [playerOne, playerTwo],
@@ -75,11 +113,12 @@ class SeedScene extends Scene {
     const redMotor = new Motorcycle(this, 1);
     const blueMotor = new Motorcycle(this, 2);
 
-    redMotor.position.set(7.5, 0, 5);
-    redMotor.scale.set(.1, .1, .1);
+    const SCALE = 0.2;
+    redMotor.position.set(160, 0, 160);
+    redMotor.scale.set(SCALE, SCALE, SCALE);
 
-    blueMotor.position.set(-7.5, 0, 5);
-    blueMotor.scale.set(.1, .1, .1);
+    blueMotor.position.set(-150, 0, -150);
+    blueMotor.scale.set(SCALE, SCALE, SCALE);
 
     this.state.players[0].bike = redMotor;
     this.state.players[1].bike = blueMotor;
@@ -87,23 +126,15 @@ class SeedScene extends Scene {
     const floorGeometry = new PlaneGeometry(boardSizeWorld, boardSizeWorld, 1);
     floorGeometry.rotateX(-Math.PI / 2);
 
-    const shortWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
-    const longWallGeometry = new PlaneGeometry(boardSizeWorld, 5, 1);
+    const HEIGHT = 10;
+    const shortWallGeometry = new PlaneGeometry(boardSizeWorld, HEIGHT, 1);
+    const longWallGeometry = new PlaneGeometry(boardSizeWorld, HEIGHT, 1);
 
-    const shortWallGeometry2 = new PlaneGeometry(boardSizeWorld * 0.85, 5, 1);
-    const longWallGeometry2 = new PlaneGeometry(boardSizeWorld * 0.85, 5, 1);
+    const shortWallGeometry2 = new PlaneGeometry(boardSizeWorld * 0.85, HEIGHT, 1);
+    const longWallGeometry2 = new PlaneGeometry(boardSizeWorld * 0.85, HEIGHT, 1);
 
-    const shortWallGeometry3 = new PlaneGeometry(boardSizeWorld * 0.6, 5, 1);
-    const longWallGeometry3 = new PlaneGeometry(boardSizeWorld * 0.6, 5, 1);
-
-    // Grid flooring
-    const myGridHelper = new GridHelper(boardSizeWorld, 2, 0xFF9933, 0xFF9933);
-
-    // var planeGeometry1 = new PlaneGeometry( boardSizeWorld + 20 , boardSizeWorld + 20, 10, 10);
-    // var plane1 = new Mesh( planeGeometry1, new MeshPhongMaterial({color: 0x000000}));
-    // plane1.position.y = -100;
-    // plane1.rotation.x = -Math.PI / 2;
-
+    const shortWallGeometry3 = new PlaneGeometry(boardSizeWorld * 0.6, HEIGHT, 1);
+    const longWallGeometry3 = new PlaneGeometry(boardSizeWorld * 0.6, HEIGHT, 1);
 
     const wallMat = new MeshBasicMaterial({
       color: 0xFF9933,
@@ -123,35 +154,38 @@ class SeedScene extends Scene {
     wallPlaneLeft.rotateY(Math.PI / 2);
     const wallPlanes = [wallPlaneTop, wallPlaneBot, wallPlaneRight, wallPlaneLeft];
 
+    const gradientBox = makeGradientCube(0x000000, 0x003366, boardSizeWorld, boardSizeWorld, 200, 0.6);
+    gradientBox.position.set(0,-100,0);
+    this.add(redMotor, blueMotor, ...wallPlanes, lights, gradientBox);
 
-    // second set of walls
-    const wallPlaneTop2 = new Mesh(longWallGeometry2, wallMat);
-    const wallPlaneBot2 = new Mesh(longWallGeometry2, wallMat);
-    const wallPlaneRight2 = new Mesh(shortWallGeometry2, wallMat);
-    const wallPlaneLeft2 = new Mesh(shortWallGeometry2, wallMat);
-    wallPlaneTop2.position.set(0, -50, boardSizeWorld * 0.85 / 2);
-    wallPlaneBot2.position.set(0, -50, -boardSizeWorld * 0.85 / 2);
-    wallPlaneRight2.position.set(boardSizeWorld * 0.85 / 2, -50, 0);
-    wallPlaneRight2.rotateY(Math.PI / 2);
-    wallPlaneLeft2.position.set(-boardSizeWorld * 0.85 / 2, -50, 0);
-    wallPlaneLeft2.rotateY(Math.PI / 2);
-    const wallPlanes2 = [wallPlaneTop2, wallPlaneBot2, wallPlaneRight2, wallPlaneLeft2];
+    // // second set of walls
+    // const wallPlaneTop2 = new Mesh(longWallGeometry2, wallMat);
+    // const wallPlaneBot2 = new Mesh(longWallGeometry2, wallMat);
+    // const wallPlaneRight2 = new Mesh(shortWallGeometry2, wallMat);
+    // const wallPlaneLeft2 = new Mesh(shortWallGeometry2, wallMat);
+    // wallPlaneTop2.position.set(0, -50, boardSizeWorld * 0.85 / 2);
+    // wallPlaneBot2.position.set(0, -50, -boardSizeWorld * 0.85 / 2);
+    // wallPlaneRight2.position.set(boardSizeWorld * 0.85 / 2, -50, 0);
+    // wallPlaneRight2.rotateY(Math.PI / 2);
+    // wallPlaneLeft2.position.set(-boardSizeWorld * 0.85 / 2, -50, 0);
+    // wallPlaneLeft2.rotateY(Math.PI / 2);
+    // const wallPlanes2 = [wallPlaneTop2, wallPlaneBot2, wallPlaneRight2, wallPlaneLeft2];
 
-    // third set of walls
-    const wallPlaneTop3 = new Mesh(longWallGeometry3, wallMat);
-    const wallPlaneBot3 = new Mesh(longWallGeometry3, wallMat);
-    const wallPlaneRight3 = new Mesh(shortWallGeometry3, wallMat);
-    const wallPlaneLeft3 = new Mesh(shortWallGeometry3, wallMat);
-    wallPlaneTop3.position.set(0, -100, boardSizeWorld * 0.6 / 2);
-    wallPlaneBot3.position.set(0, -100, -boardSizeWorld * 0.6 / 2);
-    wallPlaneRight3.position.set(boardSizeWorld * .6 / 2, -100, 0);
-    wallPlaneRight3.rotateY(Math.PI / 2);
-    wallPlaneLeft3.position.set(-boardSizeWorld * .6 / 2, -100, 0);
-    wallPlaneLeft3.rotateY(Math.PI / 2);
-    const wallPlanes3 = [wallPlaneTop3, wallPlaneBot3, wallPlaneRight3, wallPlaneLeft3];
+    // // third set of walls
+    // const wallPlaneTop3 = new Mesh(longWallGeometry3, wallMat);
+    // const wallPlaneBot3 = new Mesh(longWallGeometry3, wallMat);
+    // const wallPlaneRight3 = new Mesh(shortWallGeometry3, wallMat);
+    // const wallPlaneLeft3 = new Mesh(shortWallGeometry3, wallMat);
+    // wallPlaneTop3.position.set(0, -100, boardSizeWorld * 0.6 / 2);
+    // wallPlaneBot3.position.set(0, -100, -boardSizeWorld * 0.6 / 2);
+    // wallPlaneRight3.position.set(boardSizeWorld * .6 / 2, -100, 0);
+    // wallPlaneRight3.rotateY(Math.PI / 2);
+    // wallPlaneLeft3.position.set(-boardSizeWorld * .6 / 2, -100, 0);
+    // wallPlaneLeft3.rotateY(Math.PI / 2);
+    // const wallPlanes3 = [wallPlaneTop3, wallPlaneBot3, wallPlaneRight3, wallPlaneLeft3];
 
 
-    this.add(myGridHelper, redMotor, blueMotor, ...wallPlanes, lights, ...wallPlanes2, ...wallPlanes3);
+    // this.add(myGridHelper, redMotor, blueMotor, ...wallPlanes, lights, ...wallPlanes2, ...wallPlanes3);
   }
 
   addToUpdateList(object) {

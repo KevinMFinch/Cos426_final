@@ -2,9 +2,11 @@ import {
   BoxGeometry,
   Mesh,
   MeshBasicMaterial,
+  MeshPhongMaterial,
   Group,
   Box3,
-  Vector3
+  Vector3,
+  CylinderGeometry
 } from 'three';
 import {
   MTLLoader
@@ -20,6 +22,7 @@ import {
   boardSizeWorld,
   LEFT,
   RIGHT,
+  SPEED,
   OFFSET,
   turnAngle,
   trailMaxLength,
@@ -97,7 +100,8 @@ class Motorcycle extends Group {
     if (!scene.state.gameOver) {
       const x = this.state.direction.clone();
       const old = this.position.clone();
-      const move = this.position.clone().add(x.multiplyScalar(1));
+
+      const move = old.clone().add(x.clone().multiplyScalar(SPEED));
 
       this.position.set(move.x, move.y, move.z);
       const bbox = new Box3().setFromObject(this);
@@ -106,17 +110,24 @@ class Motorcycle extends Group {
         this.state.lost = true;
       }
 
-      const geometry = new BoxGeometry(1, 1, 1);
+      const geometry = new CylinderGeometry(2.5, 2.5, 5, 20);
+      geometry.rotateX(Math.PI / 2)
       let material = undefined;
       if (this.state.playerId === 1) {
-        material = new MeshBasicMaterial({
-          color: 0x0BF7FE
+        material = new MeshPhongMaterial({
+          color: 0x0BF7FE,
+          emissive: 0x0BF7FE,
+          emissiveIntensity: 7
         });
       } else {
-        material = new MeshBasicMaterial({
-          color: 0xFE0BAF
+        material = new MeshPhongMaterial({
+          color: 0xFE0BAF,
+          emissive: 0xFE0BAF,
+          emissiveIntensity: 7
         });
       }
+      
+      
 
       // collisions check for self
       if (this.hasCollided(trailArray, bbox)) {
@@ -133,12 +144,13 @@ class Motorcycle extends Group {
         scene.state.loserId = this.state.playerId;
       }
 
-      const cube = new Mesh(geometry, material);
-      cube.position.set(old.x, 0, old.z);
-      cube.name = playerId + '_cube_' + this.state.trailCount;
+      const trailComponent = new Mesh(geometry, material);
+      const trailPos = old.clone().add(x.multiplyScalar(-10));
+      trailComponent.position.set(trailPos.x, 3, trailPos.z);
+      trailComponent.name = playerId + '_cube_' + this.state.trailCount;
       this.state.trailCount++;
-      trailArray.push(cube);
-      scene.add(cube);
+      trailArray.push(trailComponent);
+      scene.add(trailComponent);
       if (trailArray.length > trailMaxLength) {
         const toRemove = scene.getObjectByName(trailArray.shift().name);
         scene.remove(toRemove);
