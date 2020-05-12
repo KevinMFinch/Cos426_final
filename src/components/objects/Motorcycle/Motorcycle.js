@@ -6,6 +6,7 @@ import {
   Group,
   Box3,
   Vector3,
+  Clock,
   CylinderGeometry
 } from 'three';
 import {
@@ -104,13 +105,13 @@ class Motorcycle extends Group {
       const move = old.clone().add(x.clone().multiplyScalar(SPEED));
 
       this.position.set(move.x, move.y, move.z);
-      const bbox = new Box3().setFromObject(this);
+      var bbox = new Box3().setFromObject(this);
 
       if (this.position.x < -boardSizeWorld / 2 || this.position.x > boardSizeWorld / 2 || this.position.z > boardSizeWorld / 2 || this.position.z < -boardSizeWorld / 2) {
         this.state.lost = true;
       }
 
-      const geometry = new CylinderGeometry(2.5, 2.5, 5, 20);
+      const geometry = new CylinderGeometry(2.7, 2.7, 7, 20);
       geometry.rotateX(Math.PI / 2)
       let material = undefined;
       if (this.state.playerId === 1) {
@@ -132,6 +133,7 @@ class Motorcycle extends Group {
       // collisions check for self
       if (this.hasCollided(trailArray, bbox)) {
         this.state.lost = true;
+
       }
 
       // collisions check for opposing player
@@ -145,8 +147,8 @@ class Motorcycle extends Group {
       }
 
       const trailComponent = new Mesh(geometry, material);
-      const trailPos = old.clone().add(x.multiplyScalar(-10));
-      trailComponent.position.set(trailPos.x, 3, trailPos.z);
+      const trailPos = old.clone().add(x.multiplyScalar(-14));
+      trailComponent.position.set(trailPos.x, 5, trailPos.z);
       trailComponent.name = playerId + '_cube_' + this.state.trailCount;
       this.state.trailCount++;
       trailArray.push(trailComponent);

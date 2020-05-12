@@ -12,7 +12,8 @@ import {
   Box3,
   VertexColors,
   AmbientLight,
-  DoubleSide
+  DoubleSide,
+  Clock
 } from 'three';
 import {
   Motorcycle
@@ -114,10 +115,11 @@ class SeedScene extends Scene {
     const blueMotor = new Motorcycle(this, 2);
 
     const SCALE = 0.2;
-    redMotor.position.set(160, 0, 160);
+    redMotor.position.set(130, -2, 110);
     redMotor.scale.set(SCALE, SCALE, SCALE);
 
-    blueMotor.position.set(-150, 0, -150);
+    blueMotor.position.set(-130, -2, -110);
+    blueMotor.rotateY(Math.PI);
     blueMotor.scale.set(SCALE, SCALE, SCALE);
 
     this.state.players[0].bike = redMotor;
@@ -226,6 +228,11 @@ class SeedScene extends Scene {
       }
 
       if (this.state.gameOver) {
+        var endPause = new Clock();
+        endPause.start();
+        while (endPause.getElapsedTime() < 5) {
+          continue;
+        }
         this.state.endGameFunc(this.state.loserId);
       }
     }

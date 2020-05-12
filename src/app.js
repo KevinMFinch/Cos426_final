@@ -169,8 +169,6 @@ const initGame = () => {
   window.addEventListener('keydown', onKeyDown);
   window.addEventListener('keyup', onKeyUp);
 
-
-
 };
 
 const endGame = (loserId) => {
