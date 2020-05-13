@@ -71,6 +71,7 @@ const initGame = () => {
   document.getElementById('finish-screen').style.display = 'none';
   // Initialize core ThreeJS components
   const scene = new SeedScene(endGame);
+  startGoing = false;
 
   // glow
   var composer;
