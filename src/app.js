@@ -39,10 +39,10 @@ var startGoing = false;
 
 function Countdown(options) {
   var timer,
-  instance = this,
-  seconds = options.seconds || 10,
-  updateStatus = options.onUpdateStatus || function () {},
-  counterEnd = options.onCounterEnd || function () {};
+    instance = this,
+    seconds = options.seconds || 10,
+    updateStatus = options.onUpdateStatus || function () {},
+    counterEnd = options.onCounterEnd || function () {};
 
   function decrementCounter() {
     updateStatus(seconds);
@@ -87,18 +87,18 @@ const initGame = () => {
   });
   const camera = new PerspectiveCamera();
 
-  const renderScene = new RenderPass( scene, camera );
+  const renderScene = new RenderPass(scene, camera);
 
-  const vec = new Vector2( window.innerWidth, window.innerHeight );
-  const bloomPass = new UnrealBloomPass(vec, 1.5, 0.4, 0.85 );
+  const vec = new Vector2(window.innerWidth, window.innerHeight);
+  const bloomPass = new UnrealBloomPass(vec, 1.5, 0.4, 0.85);
   bloomPass.threshold = params.bloomThreshold;
   bloomPass.strength = params.bloomStrength;
   bloomPass.radius = params.bloomRadius;
 
-  composer = new EffectComposer( renderer );
-  composer.setSize( window.innerWidth, window.innerHeight );
-  composer.addPass( renderScene );
-  composer.addPass( bloomPass );
+  composer = new EffectComposer(renderer);
+  composer.setSize(window.innerWidth, window.innerHeight);
+  composer.addPass(renderScene);
+  composer.addPass(bloomPass);
 
   // Set up camera
   camera.position.set(320, 110, -320);
@@ -119,12 +119,16 @@ const initGame = () => {
   controls.minDistance = 4;
   controls.update();
 
-  var countdown = new Countdown({  
-    seconds: 2,  // number of seconds to count down
-    onUpdateStatus: function(sec){
-      console.log(sec);
+  const countdown = new Countdown({
+    seconds: 3, // number of seconds to count down
+    onUpdateStatus: function (sec) {
+      document.getElementById('countdownClock').innerText = sec;
     }, // callback for each second
-    onCounterEnd: function(){ startGoing = true; } // final action
+    onCounterEnd: function () {
+      document.getElementById('countdownClock').innerText = 'Start!';
+      setTimeout(() => document.getElementById('countdownClock').innerText = '', 1000);
+      startGoing = true;
+    } // final action
   });
 
   countdown.start();

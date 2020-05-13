@@ -127,8 +127,6 @@ class Motorcycle extends Group {
           emissiveIntensity: 7
         });
       }
-      
-      
 
       // collisions check for self
       if (this.hasCollided(trailArray, bbox)) {
