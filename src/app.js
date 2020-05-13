@@ -101,7 +101,7 @@ const initGame = () => {
   composer.addPass( bloomPass );
 
   // Set up camera
-  camera.position.set(320, 110, -320);
+  camera.position.set(340, 150, -340);
   camera.lookAt(new Vector3(0, 0, 0));
 
   // Set up renderer, canvas, and minor CSS adjustments
@@ -114,8 +114,8 @@ const initGame = () => {
 
   // Set up controls
   const controls = new OrbitControls(camera, canvas);
+  controls.enableDamping = true;
   controls.enablePan = false;
-  controls.enableKeys = false;
   controls.minDistance = 4;
   controls.update();
 
@@ -131,7 +131,16 @@ const initGame = () => {
 
   // Render loop
   const onAnimationFrameHandler = (timeStamp) => {
+    // rotate camera
+    // var rotSpeed = 0.001;
+    // var x = camera.position.x,
+    // y = camera.position.y,
+    // z = camera.position.z;
+    // camera.position.x = x * Math.cos(rotSpeed) + z * Math.sin(rotSpeed);
+    // camera.position.z = z * Math.cos(rotSpeed) - x * Math.sin(rotSpeed);
+
     controls.update();
+
     composer.render(scene, camera);
     if (startGoing) scene.update && scene.update(timeStamp);
     if (!scene.state.gameOver)

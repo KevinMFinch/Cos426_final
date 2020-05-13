@@ -1,0 +1,51 @@
+{
+	"preload" :
+	{
+		"textures" :
+		[
+			"misc/white.jpg",
+			"misc/white_s.jpg",
+			"misc/white_local.jpg",
+
+			"demos/doom3md5/models/characters/player/arm2_local.tga",
+			"demos/doom3md5/models/characters/player/arm2_s.tga",
+			"demos/doom3md5/models/characters/player/arm2.tga",
+			"demos/doom3md5/models/characters/player/body_local.tga",
+			"demos/doom3md5/models/characters/player/body_s.tga",
+			"demos/doom3md5/models/characters/player/body.tga",
+			"demos/doom3md5/models/characters/player/browneye_local.tga",
+			"demos/doom3md5/models/characters/player/browneye_s.tga",
+			"demos/doom3md5/models/characters/player/browneye.tga",
+			"demos/doom3md5/models/characters/player/playerhead_local.tga",
+			"demos/doom3md5/models/characters/player/playerhead_s.tga",
+			"demos/doom3md5/models/characters/player/playerhead.tga",
+			"demos/doom3md5/models/characters/player/playerheaddead_local.tga",
+			"demos/doom3md5/models/characters/player/playerheaddead_s.tga",
+			"demos/doom3md5/models/characters/player/playerheaddead.tga",
+			"demos/doom3md5/models/characters/player/teethplayer_local.tga",
+			"demos/doom3md5/models/characters/player/teethplayer_s.tga",
+			"demos/doom3md5/models/characters/player/teethplayer.tga",
+
+			"demos/doom3md5/models/monsters/hellknight/hellknight_local.tga",
+			"demos/doom3md5/models/monsters/hellknight/hellknight_s.tga",
+			"demos/doom3md5/models/monsters/hellknight/hellknight.tga",
+			"demos/doom3md5/models/monsters/hellknight/tongue_local.tga",
+			"demos/doom3md5/models/monsters/hellknight/tongue_s.tga",
+			"demos/doom3md5/models/monsters/hellknight/tongue.tga"
+		],
+
+		"programs" :
+		[
+			[ "draw_md5_lit",   "shaders/draw_md5_lit.vert",   "shaders/draw_md5_lit.frag"   ],
+			[ "textured_unlit", "shaders/textured_unlit.vert", "shaders/textured_unlit.frag" ]
+		],
+
+		"materials" :
+		[
+		],
+
+		"models" :
+		[
+		]
+	}
+}

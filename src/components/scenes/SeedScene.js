@@ -1,4 +1,3 @@
-import * as Dat from 'dat.gui';
 import {
   Scene,
   MeshPhongMaterial,
@@ -9,11 +8,16 @@ import {
   GridHelper,
   Mesh,
   Vector2,
+  Matrix4,
   Box3,
   VertexColors,
   AmbientLight,
   DoubleSide,
-  Clock
+  MeshLambertMaterial,
+  CircleBufferGeometry,
+  MixOperation,
+  Clock,
+  Vector3,
 } from 'three';
 import {
   Motorcycle
@@ -27,6 +31,8 @@ import {
   RIGHT,
 } from '../../constants.js';
 
+
+// thank you: http://darrendev.blogspot.com/2016/03/gradients-in-threejs.html
 function makeGradientCube(c1, c2, w, d, h, opacity){
   if(typeof opacity === 'undefined') opacity = 1.0;
   if(typeof c1 === 'number') c1 = new Color( c1 );
@@ -125,9 +131,6 @@ class SeedScene extends Scene {
     this.state.players[0].bike = redMotor;
     this.state.players[1].bike = blueMotor;
 
-    const floorGeometry = new PlaneGeometry(boardSizeWorld, boardSizeWorld, 1);
-    floorGeometry.rotateX(-Math.PI / 2);
-
     const HEIGHT = 10;
     const shortWallGeometry = new PlaneGeometry(boardSizeWorld, HEIGHT, 1);
     const longWallGeometry = new PlaneGeometry(boardSizeWorld, HEIGHT, 1);
@@ -188,6 +191,12 @@ class SeedScene extends Scene {
 
 
     // this.add(myGridHelper, redMotor, blueMotor, ...wallPlanes, lights, ...wallPlanes2, ...wallPlanes3);
+
+    // lightsabers!
+    // LightSaberDemo.onUpdate;
+    // LightSaberDemo.onRender;
+    // this.add(LightSaberDemo);
+
   }
 
   addToUpdateList(object) {
@@ -230,7 +239,7 @@ class SeedScene extends Scene {
       if (this.state.gameOver) {
         var endPause = new Clock();
         endPause.start();
-        while (endPause.getElapsedTime() < 5) {
+        while (endPause.getElapsedTime() < 1) {
           continue;
         }
         this.state.endGameFunc(this.state.loserId);

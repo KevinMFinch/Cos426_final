@@ -111,7 +111,7 @@ class Motorcycle extends Group {
         this.state.lost = true;
       }
 
-      const geometry = new CylinderGeometry(2.7, 2.7, 7, 20);
+      const geometry = new CylinderGeometry(2.5, 2.5, 7, 20);
       geometry.rotateX(Math.PI / 2)
       let material = undefined;
       if (this.state.playerId === 1) {
@@ -128,8 +128,6 @@ class Motorcycle extends Group {
         });
       }
       
-      
-
       // collisions check for self
       if (this.hasCollided(trailArray, bbox)) {
         this.state.lost = true;

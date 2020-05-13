@@ -1,0 +1,470 @@
+<html>
+
+<head>
+<title>My WebGL App</title>
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<!-- External modules / JS imports: -->
+<script type="text/javascript" src="glMatrix.js"></script>
+<script type="text/javascript" src="jsTGALoader.js"></script>
+<script type="text/javascript" src="Utils.js"></script>
+<script type="text/javascript" src="Doom3MD5.js"></script>
+<script type="text/javascript" src="Camera.js"></script>
+<script type="text/javascript" src="AppMain.js"></script>
+
+<!-- 
+=============================================================================
+
+NOTES:
+
+WebGL ref:
+http://www.khronos.org/registry/webgl/specs/latest/1.0/
+
+ Important:
+ For the resource loading (files/images) to function
+ we need a local HTTP server. The easiest way is with Python:
+   cd <path/to/files>
+   python -m SimpleHTTPServer
+ Then in the browser:
+   http://localhost:8000
+
+=============================================================================
+-->
+
+<script id="shader-vs" type="x-shader/x-vertex">
+
+	// Vertex inputs, in object space:
+	attribute vec3 vertexPosition;
+	attribute vec3 vertexNormal;
+	attribute vec3 vertexTangent;
+	attribute vec3 vertexBitangent;
+	attribute vec2 texCoords;
+
+	// Uniform variables sent from the application:
+	uniform vec4 lightPosObjectSpace;
+	uniform vec4 viewPosObjectSpace;
+	uniform mat4 mvpMatrix;
+
+	// Stage outputs:
+	varying vec3 vViewDirTangentSpace;  // Tangent-space view direction.
+	varying vec3 vLightDirTangentSpace; // Tangent-space light direction.
+	varying vec3 vPositionObjectSpace;  // Forwarded vertex-position in object coordinates.
+	varying vec3 vLightPosObjectSpace;  // Forwarded light-position in object coordinates.
+	varying vec2 vTexCoords;
+
+	void main()
+	{
+		// Transform light direction into tangent-space:
+		vec3 light = (lightPosObjectSpace.xyz - vertexPosition);
+		vLightDirTangentSpace = vec3(
+			dot(vertexTangent,   light),
+			dot(vertexBitangent, light),
+			dot(vertexNormal,    light)
+		);
+
+		// Transform view direction into tangent-space:
+		vec3 view = (viewPosObjectSpace.xyz - vertexPosition);
+		vViewDirTangentSpace = vec3(
+			dot(vertexTangent,   view),
+			dot(vertexBitangent, view),
+			dot(vertexNormal,    view)
+		);
+
+		// Pass vertex-position & light-position in object space (as is):
+		vPositionObjectSpace = vertexPosition;
+		vLightPosObjectSpace = lightPosObjectSpace.xyz;
+		vTexCoords           = texCoords; // Pass tex-coords as is:
+
+		// Transform position to clip-space for GL:
+		gl_Position = vec4(mvpMatrix * vec4(vertexPosition, 1.0));
+	}
+
+</script>
+<script id="shader-fs" type="x-shader/x-fragment">
+
+	precision mediump float;
+
+	// Texture samplers:
+	uniform sampler2D diffuseMap;
+	uniform sampler2D normalMap;
+	uniform sampler2D specularMap;
+
+	// Inputs from previous stage (vertex shader):
+	varying vec3 vViewDirTangentSpace;  // Tangent-space view direction.
+	varying vec3 vLightDirTangentSpace; // Tangent-space light direction.
+	varying vec3 vPositionObjectSpace;  // Forwarded vertex-position in object coordinates.
+	varying vec3 vLightPosObjectSpace;  // Forwarded light-position in object coordinates.
+	varying vec2 vTexCoords;
+
+	//TODO:
+	// define a Light and Material class to put these
+	// constants in and pass them as uniforms.
+
+	// Light params:
+	const float pointLightRadius    = 18.0;
+	const float lightAttenConst     = 1.0;
+	const float lightAttenLinear    = 2.0 / pointLightRadius;
+	const float lightAttenQuadratic = 1.0 / (pointLightRadius * pointLightRadius);
+	const vec4  lightColor          = vec4(0.8, 0.8, 0.8, 1.0);
+
+	// Material params:
+	const float matShininess     = 50.0;
+	const vec4  matSpecularColor = vec4(0.5, 0.5, 0.5, 1.0);
+	const vec4  matDiffuseColor  = vec4(1.0, 1.0, 1.0, 1.0);
+	const vec4  matEmissiveColor = vec4(0.0, 0.0, 0.0, 1.0);
+	const vec4  matAmbientColor  = vec4(0.0, 0.0, 0.0, 1.0);
+
+	vec3 sampleNormalMap(in vec2 texCoords)
+	{
+		return normalize(texture2D(normalMap, texCoords).rgb * 2.0 - 1.0);
+	}
+
+	// Compute point light contribution.
+	float pointLight(
+		in vec3  P,              // Point in space that is to be lit.
+		in vec3  lightPos,       // Position  of the light source.
+		in float attenConst,     // Constant light attenuation factor.
+		in float attenLinear,    // Linear light attenuation factor.
+		in float attenQuadratic) // Quadratic light attenuation factor.
+	{
+		float d = length(lightPos - P);
+		return (1.0 / (attenConst + attenLinear * d + attenQuadratic * (d * d)));
+	}
+
+	// Shades a fragment using the Blinn-Phong light model.
+	vec4 shade(
+		in vec3 N,            // Surface normal.
+		in vec3 H,            // Half-vector.
+		in vec3 L,            // Light direction vector.
+		in float shininess,   // Surface shininess (Phong-power).
+		in vec4 specular,     // Surface's specular reflection color, modulated with specular map sample.
+		in vec4 diffuse,      // Surface's diffuse  reflection color, modulated with diffuse  map sample.
+		in vec4 emissive,     // Surface's emissive contribution. Emission color modulated with an emission map.
+		in vec4 ambient,      // Ambient contribution.
+		in vec4 lightContrib) // Light contribution, computed based on light source type.
+	{
+		float NdotL = max(dot(N, L), 0.0);
+		float NdotH = max(dot(N, H), 0.0);
+		float specContrib = (NdotL > 0.0) ? 1.0 : 0.0;
+		vec4 K = emissive + (diffuse * ambient);
+		K += lightContrib * (diffuse * NdotL + (specular * pow(NdotH, shininess) * specContrib));
+		return (K);
+	}
+
+	void main()
+	{
+		// TODO USE A DIRECTION LIGHT INSTEAD!
+		vec4 lightContrib = pointLight(vPositionObjectSpace, vLightPosObjectSpace,
+		                               lightAttenConst, lightAttenLinear, lightAttenQuadratic) * lightColor;
+
+		// Compute half-vector / fetch normal-map:
+		vec3 V = vViewDirTangentSpace;
+		vec3 L = vLightDirTangentSpace;
+		vec3 H = normalize(L + V);
+		vec3 N = sampleNormalMap(vTexCoords);
+
+		// Apply shading algorithm:
+		gl_FragColor = shade(
+			N,
+			H,
+			L,
+			matShininess,
+			texture2D(specularMap, vTexCoords) * matSpecularColor,
+			texture2D(diffuseMap,  vTexCoords) * matDiffuseColor,
+			matEmissiveColor,
+			matAmbientColor,
+			lightContrib
+		);
+
+		// Set alpha to 1 (fully-opaque).
+		gl_FragColor.a = 1.0;
+	}
+
+</script>
+
+<!--
+=============================================================================
+-->
+
+<script id="debugDrawShadowDepthMap-vs" type="x-shader/x-vertex">
+
+	precision lowp float;
+
+	// xy = vertex position in normalized device coordinates ([-1,+1] range).
+	attribute vec2 vertexPositionNDC;
+
+	varying vec2 vTexCoords;
+
+	const vec2 scale = vec2(0.5, 0.5);
+
+	void main()
+	{
+		vTexCoords  = vertexPositionNDC * scale + scale; // scale vertex attribute to [0,1] range
+		gl_Position = vec4(vertexPositionNDC/3.0, 0.0, 1.0);
+	}
+
+</script>
+<script id="debugDrawShadowDepthMap-fs" type="x-shader/x-fragment">
+
+	precision mediump float;
+
+	uniform sampler2D colorMap;
+	varying vec2 vTexCoords;
+
+	// These constants need to be in sync with the application's projection depth.
+	// They should optimally be uniform variables.
+	const float zNear = 0.1;
+	const float zFar  = 1000.0;
+
+	// Brings the depth values to a visualizable range.
+	// This will produce a grayscale image from the depth of the scene.
+	float linearizeDepth()
+	{
+		float depth = texture2D(colorMap, vTexCoords).x;
+		return (2.0 * zNear) / (zFar + zNear - depth * (zFar - zNear));
+	}
+
+	void main()
+	{
+		float c = linearizeDepth();
+		gl_FragColor = vec4(c, c, c, 1.0);
+	}
+
+</script>
+
+<!--
+=============================================================================
+-->
+
+<script id="debugLine-vs" type="x-shader/x-vertex">
+
+	precision mediump float;
+
+	attribute vec3 vertexPosition;
+	attribute vec3 vertexColor;
+
+	uniform mat4 mvpMatrix;
+	varying vec3 vLineColor;
+
+	void main()
+	{
+		vLineColor = vertexColor;
+		gl_Position = vec4(mvpMatrix * vec4(vertexPosition, 1.0));
+	}
+
+</script>
+<script id="debugLine-fs" type="x-shader/x-fragment">
+
+	precision mediump float;
+
+	varying vec3 vLineColor;
+
+	void main()
+	{
+		gl_FragColor = vec4(vLineColor, 1.0); // Always opaque (alpha = 1)
+	}
+
+</script>
+
+<!--
+=============================================================================
+-->
+
+<script type="text/javascript">
+
+	var gl;
+	var mdlPlayer;
+	var mdlFloor;
+	var shaderProgRenderLit;
+	var lightPosWorldSpace = [20.0, 40.0, -10.0, 1.0]; // vec4
+
+	function appStart() {
+
+		utils.initWebGL("glCanvas");
+		gl = utils.gl;
+
+		app.init("glCanvas");
+
+		var vertexAttibs = [
+			{ name: "vertexPosition",  index: 0 },
+			{ name: "vertexNormal",    index: 1 },
+			{ name: "vertexTangent",   index: 2 },
+			{ name: "vertexBitangent", index: 3 },
+			{ name: "texCoords",       index: 4 }
+		];
+		var shaderUniforms = [
+			"lightPosObjectSpace",
+			"viewPosObjectSpace",
+			"mvpMatrix",
+			"diffuseMap",
+			"normalMap",
+			"specularMap"
+		];
+		shaderProgRenderLit = utils.loadProgram(
+			utils.loadShader("shader-vs"),
+			utils.loadShader("shader-fs"),
+			vertexAttibs, shaderUniforms);
+
+		mdlFloor = new DoomMD5Model();
+		if (!mdlFloor.loadFromFile("cube.md5mesh", false))
+		{
+			alert("Failed to load floor!");
+		}
+		mdlFloor.setUpGLBuffers(gl.STATIC_DRAW, null);
+
+		mdlPlayer = new DoomMD5Model();
+		if (!mdlPlayer.loadFromFile("player.md5mesh", false))
+		{
+			alert("Failed to load player!");
+		}
+		mdlPlayer.setUpGLBuffers(gl.STATIC_DRAW, null);
+
+		utils.initDebugLines();
+	}
+
+	var xRot = 0;
+	var yRot = 0;
+	var zRot = 0;
+
+	function degToRad(degrees) {
+		return degrees * Math.PI / 180;
+	}
+
+	function drawWithLight(mdl, modelMatrix) {
+
+		var lightPosObjectSpace = [0.0, 0.0, 0.0, 1.0];
+		var viewPosObjectSpace  = [0.0, 0.0, 0.0, 1.0];
+
+		var invModelMatrix = mat4.create();
+		var mvpMatrix      = mat4.create();
+		var vpMatrix       = mat4.create();
+		var viewMatrix     = camera.getViewMatrix();
+		var projMatrix     = camera.getProjectionMatrix();
+
+		// MVP = P * V * M
+		mat4.multiply(projMatrix, viewMatrix, vpMatrix);
+		mat4.multiply(vpMatrix, modelMatrix, mvpMatrix);
+
+		// Transform light and view positions into model/object space
+		// by multiplying them with the inverse of the model matrix.
+		mat4.inverse(modelMatrix, invModelMatrix);
+		vec3.transformMat4(lightPosObjectSpace, lightPosWorldSpace, invModelMatrix);
+		vec3.transformMat4(viewPosObjectSpace,  camera.eye, invModelMatrix);
+
+		gl.useProgram(shaderProgRenderLit);
+		gl.uniformMatrix4fv(shaderProgRenderLit.uniforms.mvpMatrix, false, mvpMatrix);
+		gl.uniform4fv(shaderProgRenderLit.uniforms.lightPosObjectSpace, lightPosObjectSpace);
+		gl.uniform4fv(shaderProgRenderLit.uniforms.viewPosObjectSpace,  viewPosObjectSpace);
+
+		mdl.draw(shaderProgRenderLit);
+	}
+
+	function doRender() {
+
+		var modelMatrix = mat4.create();
+
+		mat4.identity(modelMatrix);
+		mat4.scale(modelMatrix, [0.5, 0.5, 0.5], modelMatrix);
+		drawWithLight(mdlPlayer, modelMatrix);
+
+		mat4.identity(modelMatrix);
+		mat4.scale(modelMatrix, [4.0, 0.1, 4.0], modelMatrix);
+		drawWithLight(mdlFloor, modelMatrix);
+	}
+
+	function appUpdate() {
+
+		camera.update();
+
+		// Render to shadow texture:
+		//app.beginShadowRendering();
+		//doRender();
+		//app.endShadowRendering();
+
+		// STD render:
+		gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
+		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+		doRender();
+
+		//app.debugDrawShadowDepthMap();
+	}
+
+	var lastTime = 0;
+
+	function animate() {
+
+		var timeNow = new Date().getTime();
+		if (lastTime != 0) {
+			var elapsed = timeNow - lastTime;
+
+			xRot += (30 * elapsed) / 1000.0;
+			yRot += (30 * elapsed) / 1000.0;
+			zRot += (30 * elapsed) / 1000.0;
+		}
+		lastTime = timeNow;
+	}
+
+	function tick() {
+
+		utils.requestAnimFrame(tick);
+		appUpdate();
+		animate();
+	}
+
+	function handleKeyDown(keyEvent) {
+		camera.keyboardInput(keyEvent, false);
+	}
+
+	function handleKeyUp(keyEvent) {
+		camera.keyboardInput(keyEvent, true);
+	}
+
+	/*
+	function handleMouseDown(mouseEvent) {
+	}
+	function handleMouseUp(mouseEvent) {
+	}
+	*/
+
+	function handleMouseMove(mouseEvent) {
+		camera.mouseInput(mouseEvent.clientX, mouseEvent.clientY);
+
+		var dumpDiv = document.getElementById("dump_div");
+		if (dumpDiv)
+		{
+			dumpDiv.innerHTML =
+				"mouse.x = " + mouseEvent.clientX + "<br />" +
+				"mouse.y = " + mouseEvent.clientY + "<br />" +
+				"viewport.width  = " + gl.viewportWidth  + "<br />" +
+				"viewport.height = " + gl.viewportHeight + "<br />";
+		}
+	}
+
+	function webGLApp() {
+		document.onkeydown = handleKeyDown;
+		document.onkeyup = handleKeyUp;
+		document.onmousemove = handleMouseMove;
+
+		appStart();
+
+		camera.oldCursorPosX     = gl.viewportWidth/2;
+		camera.oldCursorPosY     = gl.viewportHeight/2;
+		camera.currentCursorPosX = gl.viewportWidth/2;
+		camera.currentCursorPosY = gl.viewportHeight/2;
+
+		tick();
+	}
+
+</script>
+
+</head>
+
+<body onload="webGLApp();">
+	<canvas id="glCanvas" style="border: none;" width="800" height="600"></canvas>
+	<br />
+	<div id="dump_div">
+	</div>
+	<br />
+</body>
+
+</html>

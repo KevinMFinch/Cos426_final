@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<title>WebGL Lightsaber</title>
+		<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+		<link rel="shortcut icon" type="image/x-icon" href="demos/lightsaber/favicon.ico" />
+
+		<!-- Styles (CSS): -->
+		<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/vader/jquery-ui.css">
+		<style type="text/css">
+			body {
+				background-image: url("demos/lightsaber/textures/lightsabers_clash.jpg");
+				background-size: 100%;
+				background-repeat: no-repeat;
+				background-color: #000000;
+			}
+			button {
+				width: 80%;
+				margin-top: 12%;
+				margin-left: 10%;
+			}
+			fieldset {
+				border: 0;
+				margin-top: 10%;
+				margin-left: 4.5%;
+			}
+			select {
+				width: 95%;
+			}
+			a {
+				color: #FFFFFF;
+			}
+			#webgl_canvas {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				margin: auto;
+				border-style: double;
+				border-width: 100%;
+				border-color: #AAAAAA;
+				background-color: #000000;
+				display: none;
+				z-index: 1; /* Stays under any overlay drawn on top of it */
+			}
+			#loading_animation {
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				margin: auto;
+				display: none;
+				z-index: 2; /* Rendered above the canvas element */
+			}
+			#author_text {
+				position: absolute;
+				top: 90%;
+				bottom: 90%;
+				left: 43%;
+				right: 43%;
+				width: 50%;
+				color: #AAAAAA;
+				font-family: Verdana,Arial,sans-serif; /* Stole this from the jQuery stylesheet */
+				font-size: 1.2em;
+				z-index: 3;
+			}
+			#toggleables1, #toggleables2 {
+				width: 90%;
+				margin-top: 7%;
+				margin-left: 10%;
+			}
+			#controls {
+				width: 17.5%;
+				padding-bottom: 3%;
+				margin-top: 15%;
+			}
+		</style>
+
+		<!-- External modules: Third party -->
+		<script type="text/javascript" src="//code.jquery.com/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+		<script type="text/javascript" src="thirdparty/glmatrix/dist/gl-matrix-min.js"></script>
+
+		<!-- External modules: JEDI framework -->
+		<script type="text/javascript" src="jedi/jedi.js"></script>
+		<script type="text/javascript" src="jedi/web_app.js"></script>
+		<script type="text/javascript" src="jedi/renderer.js"></script>
+		<script type="text/javascript" src="jedi/shader.js"></script>
+		<script type="text/javascript" src="jedi/texture.js"></script>
+		<script type="text/javascript" src="jedi/material.js"></script>
+		<script type="text/javascript" src="jedi/model3d.js"></script>
+		<script type="text/javascript" src="jedi/framebuffer.js"></script>
+		<script type="text/javascript" src="jedi/resource_manager.js"></script>
+		<script type="text/javascript" src="jedi/glow_effect.js"></script>
+		<script type="text/javascript" src="jedi/polyboard.js"></script>
+
+		<!-- External modules: Demo source -->
+		<script type="text/javascript" src="demos/lightsaber/lightsaber.js"></script>
+
+		<!-- Application entry points: -->
+		<script type="text/javascript">
+
+			// Give a few directions to the user in case the demo
+			// fails to initialize due to WebGL problems...
+			//
+			var webglHelpMessage = "Make sure your browser supports WebGL drawing. <br />" +
+			"Visit the following links to know more: " +
+			"<ul>"  +
+			"<li> " +
+			"<a href='https://get.webgl.org/'> " +
+			"Test if your browser version supports WebGL" +
+			"</a> " +
+			"</li>" +
+			"<li>"  +
+			"<a href='https://wiki.mozilla.org/Blocklisting/Blocked_Graphics_Drivers#How_to_force-enable_blocked_graphics_features'>" +
+			"Firefox: How to force-enable blocked graphics features" +
+			"</a>"  +
+			"</li>" +
+			"<li>"  +
+			"<a href='http://www.borfast.com/blog/how-enable-webgl-google-chrome-linux-blacklisted-graphics-card'>" +
+			"Chrome: How to enable WebGL with a blacklisted graphics card" +
+			"</a>"  +
+			"</li>" +
+			"<li>"  +
+			"<a href='https://discussions.apple.com/thread/3300585?start=0&tstart=0'>" +
+			"Safari: How to enable WebGL" +
+			"</a>"  +
+			"</li>" +
+			"</ul>";
+
+			// Set up jQuery UI as soon as the page loads.
+			$(function() {
+				// Misc:
+ 				$("#controls").tabs();
+				$("#toggleables1").buttonset();
+				$("#toggleables2").buttonset();
+
+				// Blade color selector:
+				$("#color_selector").selectmenu({
+					change : function (event, data) {
+						LightSaberDemo.setBladeColor(data.item.value);
+					}
+ 				});
+
+				// Saber on button:
+				$("#turn_on_button").button().click(
+					function () {
+						LightSaberDemo.saberOn();
+					}
+				);
+
+				// Saber off button:
+				$("#turn_off_button").button().click(
+					function () {
+						LightSaberDemo.saberOff();
+					}
+				);
+
+				// Glow toggle button:
+				$("#enable_glow_button").toggle().click(
+					function () {
+						LightSaberDemo.toggleGlow();
+					}
+				);
+
+				// Trail toggle button:
+				$("#enable_trail_button").toggle().click(
+					function () {
+						LightSaberDemo.toggleTrail();
+					}
+				);
+
+				// FXAA toggle button:
+				$("#enable_fxaa_button").toggle().click(
+					function () {
+						LightSaberDemo.toggleFxaa();
+					}
+				);
+
+				// Sound toggle button:
+				$("#enable_sound_button").toggle().click(
+					function () {
+						LightSaberDemo.toggleSound();
+					}
+				);
+			});
+
+			function refreshCanvas() {
+				var canvas = document.getElementById("webgl_canvas");
+				var image  = document.getElementById("loading_animation");
+
+				if (canvas) {
+					canvas.width  = window.innerWidth  * 0.6;
+					canvas.height = window.innerHeight * 0.8;
+					$("#webgl_canvas").show();
+				}
+
+				if (image) {
+					var dimX = image.width;
+					var dimY = image.height;
+					while (dimX >= canvas.width || dimY >= canvas.height) {
+						dimX /= 2;
+						dimY /= 2;
+					}
+					$("#loading_animation").attr("width",  dimX);
+					$("#loading_animation").attr("height", dimY);
+					$("#loading_animation").show();
+				}
+			}
+
+			function appStart() {
+				try {
+					// Framework setup.
+					if (!jedi.WebApp.init(LightSaberDemo.onUpdate, LightSaberDemo.onRender)) {
+						jedi.fatalError("Fatal error: Failed to initialize the WebApp!");
+					}
+
+					// Delay displaying the canvas and loading animation
+					// until its runtime size can be properly defined.
+					refreshCanvas();
+
+					if (!jedi.Renderer.init("webgl_canvas")) {
+						jedi.fatalError("Fatal error: Failed to initialize the Renderer! <br />" + webglHelpMessage);
+					}
+
+					// Once all resources are done loading, control will be passed to LightSaberDemo.
+					jedi.ResourceManager.init("demos/lightsaber/preload_manifest.json",
+						LightSaberDemo.onResourcesLoaded);
+
+				} catch (ignore) {
+					jedi.logWarning("Unhandled exception caught on 'appStart()'!");
+					jedi.WebApp.renderErrorPage("demos/lightsaber/error_dump.html", "canvas_overlay");
+				}
+			}
+
+			function appExit() {
+				try {
+					LightSaberDemo.onExit();
+					jedi.ResourceManager.purgeAllResources();
+				} catch (ignore) {
+					/* Too late to handle exception. User is leaving the page. */
+				}
+			}
+
+		</script>
+	</head>
+
+	<body onload="appStart();" onunload="appExit();">
+		<!-- WebGL canvas and loading animation overlay: -->
+		<div id="page_body">
+			<canvas id="webgl_canvas" width="640" height="480"></canvas>
+			<div id="canvas_overlay">
+				<img src="demos/lightsaber/textures/loading.gif" id="loading_animation">
+			</div>
+		</div>
+
+		<!-- A little bit of self promotion... -->
+		<div id="author_text">
+			<p>
+				Created by <a href="http://glampert.com" target="_blank">Lampert</a>
+			</p>
+		</div>
+
+		<!-- Sound effects: -->
+		<audio id="snd_saber_on"   src="demos/lightsaber/sounds/saber_on.mp3"   preload="auto"></audio>
+		<audio id="snd_saber_off"  src="demos/lightsaber/sounds/saber_off.mp3"  preload="auto"></audio>
+		<audio id="snd_saber_move" src="demos/lightsaber/sounds/saber_move.mp3" preload="auto"></audio>
+		<audio id="snd_saber_loop" src="demos/lightsaber/sounds/saber_loop.mp3" preload="auto" loop="loop"></audio>
+
+		<!-- jQuery UI panel: -->
+		<div id="controls">
+			<button id="turn_on_button">Saber On</button>
+			<br />
+			<button id="turn_off_button">Saber Off</button>
+			<br />
+
+			<form action="#">
+			<fieldset>
+			<select name="color_selector" id="color_selector">
+				<option>Blue</option>
+				<option>Green</option>
+				<option>Red</option>
+				<option>Cyan</option>
+				<option>Magenta</option>
+				<option>Yellow</option>
+			</select>
+			</fieldset>
+			</form>
+
+			<div id="toggleables1">
+				<input type="checkbox" id="enable_glow_button" checked="checked">
+				<label for="enable_glow_button">Glow</label>
+
+				<input type="checkbox" id="enable_trail_button" checked="checked">
+				<label for="enable_trail_button">Trail</label>
+			</div>
+			<div id="toggleables2">
+				<input type="checkbox" id="enable_fxaa_button" checked="checked">
+				<label for="enable_fxaa_button">FXAA</label>
+
+				<input type="checkbox" id="enable_sound_button" checked="checked">
+				<label for="enable_sound_button">Sound</label>
+			</div>
+		</div>
+	</body>
+</html>

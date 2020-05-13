@@ -1,0 +1,20 @@
+{
+	"preload" :
+	{
+		"textures" :
+		[
+		],
+
+		"programs" :
+		[
+		],
+
+		"materials" :
+		[
+		],
+
+		"models" :
+		[
+		]
+	}
+}

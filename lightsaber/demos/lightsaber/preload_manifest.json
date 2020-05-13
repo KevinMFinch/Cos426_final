@@ -1,0 +1,41 @@
+{
+	"preload" :
+	{
+		"textures" :
+		[
+			"misc/white.jpg",
+			"misc/white_s.jpg",
+			"misc/white_local.jpg",
+
+			"demos/lightsaber/textures/material_2.jpg",
+			"demos/lightsaber/textures/material_3.jpg",
+			"demos/lightsaber/textures/material_4.jpg",
+			"demos/lightsaber/textures/material_5.jpg",
+			"demos/lightsaber/textures/material_6.jpg",
+			"demos/lightsaber/textures/metal_corrugated_shiny.jpg"
+		],
+
+		"programs" :
+		[
+			[ "draw_with_tint",         "shaders/draw_with_tint.vert",     "shaders/draw_with_tint.frag"         ],
+			[ "textured_unlit",         "shaders/textured_unlit.vert",     "shaders/textured_unlit.frag"         ],
+			[ "anisotropic_lit",        "shaders/anisotropic_lit.vert",    "shaders/anisotropic_lit.frag"        ],
+			[ "fullscreen_quad",        "shaders/draw_ndc_quad.vert",      "shaders/draw_ndc_quad.frag"          ],
+			[ "glowfx_compose",         "shaders/draw_ndc_quad.vert",      "shaders/glowfx_compose.frag"         ],
+			[ "glowfx_horizontal_blur", "shaders/draw_ndc_quad.vert",      "shaders/glowfx_horizontal_blur.frag" ],
+			[ "glowfx_vertical_blur",   "shaders/draw_ndc_quad.vert",      "shaders/glowfx_vertical_blur.frag"   ],
+			[ "fxaa",                   "shaders/fxaa.vert",               "shaders/fxaa.frag"                   ],
+			[ "polyboard",              "shaders/polyboard.vert",          "shaders/polyboard.frag"              ]
+		],
+
+		"materials" :
+		[
+			"demos/lightsaber/models/lightsaber.mtl"
+		],
+
+		"models" :
+		[
+			[ "lightsaber", "demos/lightsaber/models/lightsaber.obj" ]
+		]
+	}
+}
